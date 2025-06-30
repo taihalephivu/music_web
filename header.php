@@ -1,7 +1,21 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $cartCount = 0;
-if (isset($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
+$cartData = [];
+if (isset($_SESSION['user']['id'])) {
+    require_once 'config/database.php';
+    $db = new Database();
+    $conn = $db->getConnection();
+    $user_id = $_SESSION['user']['id'];
+    $stmt = $conn->prepare('SELECT c.instrument_id as id, i.name, i.price, i.image_url, c.quantity 
+                            FROM cart c 
+                            JOIN instruments i ON c.instrument_id = i.id 
+                            WHERE c.user_id = ?');
+    $stmt->execute([$user_id]);
+    $cartData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($cartData as $item) {
         $cartCount += $item['quantity'];
     }
 }
@@ -52,6 +66,7 @@ if (isset($_SESSION['cart'])) {
                     <?php if (isset($_SESSION['user'])): ?>
                         <div class="user-name">👋 <?php echo htmlspecialchars($_SESSION['user']['full_name'] ?? $_SESSION['user']['username']); ?></div>
                         <a href="user/profile.php"><i class="fas fa-id-card"></i> Hồ sơ</a>
+                        <a href="user/history.php"><i class="fas fa-history"></i> Lịch sử mua hàng</a>
                         <a href="user/logout.php"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                     <?php elseif (isset($_SESSION['admin'])): ?>
                         <div class="user-name">👨‍💼 <?php echo htmlspecialchars($_SESSION['admin']['full_name'] ?? $_SESSION['admin']['username']); ?></div>
@@ -72,4 +87,5 @@ if (isset($_SESSION['cart'])) {
             </div>
         </div>
     </nav>
-</header> 
+</header>
+<script>window.cartData = <?php echo json_encode($cartData); ?>;</script> 

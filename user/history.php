@@ -173,8 +173,8 @@ function statusColor($status) {
 </head>
 <body>
     <div class="history-container">
-        <a href="profile.php" class="back-link">
-            <i class="fas fa-arrow-left"></i> Quay lại hồ sơ
+        <a href="../index.php" class="back-link">
+            <i class="fas fa-arrow-left"></i> Quay lại trang chủ
         </a>
         
         <div class="history-header">

@@ -45,7 +45,8 @@ foreach ($cart as $item) {
 }
 
 // Xóa giỏ hàng sau khi đặt hàng thành công
-unset($_SESSION['cart']);
+$stmt = $db->prepare('DELETE FROM cart WHERE user_id = ?');
+$stmt->execute([$user_id]);
 
 // Sau khi lưu xong, chuyển về lịch sử giao dịch
 header('Location: history.php?success=1');
