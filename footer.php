@@ -69,15 +69,16 @@
             <div class="footer-section">
                 <h3><i class="fas fa-map"></i> Bản đồ chỉ dẫn</h3>
                 <div class="map-container">
-                    <div class="map-placeholder">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <p>Bản đồ Google Maps</p>
+                    <div class="map-real">
+                        <iframe
+                            src="https://www.google.com/maps?q=123+Đường+ABC,+Quận+1,+TP.HCM&output=embed"
+                            width="100%" height="250" style="border:0; border-radius:12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         <div class="map-info">
                             <p><strong>Địa chỉ:</strong> 123 Đường ABC, Quận 1, TP.HCM</p>
                             <p><strong>Giờ mở cửa:</strong> 8:00 - 22:00 (Thứ 2 - Chủ nhật)</p>
                             <p><strong>Điện thoại:</strong> 0909 123 456</p>
                         </div>
-                        <a href="https://maps.google.com" target="_blank" class="btn-map">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=123+Đường+ABC,+Quận+1,+TP.HCM" target="_blank" class="btn-map">
                             <i class="fas fa-directions"></i> Chỉ đường
                         </a>
                     </div>
@@ -286,16 +287,17 @@
     overflow: hidden;
 }
 
-.map-placeholder {
+.map-real {
     padding: 20px;
     text-align: center;
     color: #666;
 }
 
-.map-placeholder i {
-    font-size: 3rem;
-    color: #2196f3;
-    margin-bottom: 10px;
+.map-real iframe {
+    width: 100%;
+    height: 250px;
+    border: 0;
+    border-radius: 12px;
 }
 
 .map-info {
