@@ -88,6 +88,22 @@ if (isset($_SESSION['user']['id'])) {
         </div>
     </nav>
 </header>
+<!-- Nút lên đầu trang -->
+<button id="backToTopBtn" title="Lên đầu trang" style="display:none;position:fixed;bottom:32px;right:32px;z-index:9999;background:#2196f3;color:#fff;border:none;border-radius:50%;width:48px;height:48px;box-shadow:0 4px 16px #2196f355;cursor:pointer;font-size:1.6rem;transition:background 0.2s;">
+  <i class="fas fa-arrow-up"></i>
+</button>
+<script>
+// Hiện/ẩn nút khi cuộn
+window.addEventListener('scroll', function() {
+  document.getElementById('backToTopBtn').style.display = (window.scrollY > 200) ? 'block' : 'none';
+});
+// Cuộn lên đầu trang khi nhấn
+if(document.getElementById('backToTopBtn')) {
+  document.getElementById('backToTopBtn').onclick = function() {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  };
+}
+</script>
 <script>window.cartData = <?php echo json_encode($cartData); ?>;</script>
 <style>
 .header { border-bottom: 1px solid #e0e0e0; }
