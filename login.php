@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
         
         <div class="register-link">
-            <p>Chưa có tài khoản? <a href="user/register.php">Đăng ký ngay</a></p>
+            <p>Chưa có tài khoản? <a href="register.php">Đăng ký ngay</a></p>
         </div>
         
         <div class="back-home">

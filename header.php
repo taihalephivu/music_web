@@ -59,7 +59,7 @@ if (isset($_SESSION['cart'])) {
                         <a href="admin/logout.php"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                     <?php else: ?>
                         <a href="login.php"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
-                        <a href="user/register.php"><i class="fas fa-user-plus"></i> Đăng ký</a>
+                        <a href="register.php"><i class="fas fa-user-plus"></i> Đăng ký</a>
                     <?php endif; ?>
                 </div>
             </div>
