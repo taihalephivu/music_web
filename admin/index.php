@@ -4,6 +4,7 @@ if (!isset($_SESSION['admin'])) {
     header('Location: login.php');
     exit;
 }
+$page = $_GET['page'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -101,17 +102,30 @@ if (!isset($_SESSION['admin'])) {
                 <div class="admin-name">Chào, <?php echo htmlspecialchars($_SESSION['admin']['full_name'] ?? $_SESSION['admin']['username']); ?>!</div>
             </div>
             <div class="sidebar-menu">
-                <a href="products.php"><i class="fas fa-box"></i> Quản lý sản phẩm</a>
-                <a href="orders.php"><i class="fas fa-receipt"></i> Quản lý đơn hàng</a>
-                <a href="users.php"><i class="fas fa-users"></i> Quản lý người dùng</a>
+                <a href="index.php?page=products"<?php if($page==='products') echo ' class="active"'; ?>><i class="fas fa-box"></i> Quản lý sản phẩm</a>
+                <a href="index.php?page=orders"<?php if($page==='orders') echo ' class="active"'; ?>><i class="fas fa-receipt"></i> Quản lý đơn hàng</a>
+                <a href="index.php?page=users"<?php if($page==='users') echo ' class="active"'; ?>><i class="fas fa-users"></i> Quản lý người dùng</a>
             </div>
             <div class="sidebar-logout">
                 <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
             </div>
         </nav>
         <main class="admin-content">
-            <h2>Chào mừng đến với trang quản trị!</h2>
-            <p>Chọn chức năng ở menu bên trái để quản lý hệ thống.</p>
+            <?php
+            switch($page) {
+                case 'products':
+                    include 'products.php';
+                    break;
+                case 'orders':
+                    include 'orders.php';
+                    break;
+                case 'users':
+                    include 'users.php';
+                    break;
+                default:
+                    echo '<h2>Chào mừng đến với trang quản trị!</h2><p>Chọn chức năng ở menu bên trái để quản lý hệ thống.</p>';
+            }
+            ?>
         </main>
     </div>
 </body>
