@@ -92,6 +92,34 @@ $page = $_GET['page'] ?? '';
             .sidebar-logout { margin: 0; }
             .admin-content { padding: 24px 10px; }
         }
+        .admin-header-actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 18px;
+            justify-content: flex-end;
+        }
+        .admin-header-actions a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 2px 8px #2196f355;
+            padding: 10px 22px;
+        }
+        .admin-header-actions .home-btn {
+            background: #2196f3;
+            color: #fff;
+        }
+        .admin-header-actions .logout-btn {
+            background: #ff4757;
+            color: #fff;
+            box-shadow: 0 2px 8px #ff475799;
+        }
+        .admin-header-actions a:hover {
+            opacity: 0.92;
+        }
     </style>
 </head>
 <body>
@@ -106,11 +134,12 @@ $page = $_GET['page'] ?? '';
                 <a href="index.php?page=orders"<?php if($page==='orders') echo ' class="active"'; ?>><i class="fas fa-receipt"></i> Quản lý đơn hàng</a>
                 <a href="index.php?page=users"<?php if($page==='users') echo ' class="active"'; ?>><i class="fas fa-users"></i> Quản lý người dùng</a>
             </div>
-            <div class="sidebar-logout">
-                <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-            </div>
         </nav>
         <main class="admin-content">
+            <div class="admin-header-actions">
+                <a href="../index.php" class="home-btn"><i class="fas fa-home"></i> Trở về trang chủ</a>
+                <a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
             <?php
             switch($page) {
                 case 'products':

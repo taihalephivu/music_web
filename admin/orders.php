@@ -31,6 +31,35 @@ function statusColor($status) {
         default: return '#fff';
     }
 }
+if (isset($_POST['action']) && isset($_POST['order_id'])) {
+    $id = intval($_POST['order_id']);
+    if ($_POST['action'] === 'process') {
+        $status = 'processing';
+    } elseif ($_POST['action'] === 'cancel') {
+        $status = 'cancelled';
+    } elseif ($_POST['action'] === 'ship') {
+        $status = 'shipped';
+    } else {
+        $status = '';
+    }
+    if ($status) {
+        $stmt = $conn->prepare("UPDATE orders SET status=? WHERE id=?");
+        $stmt->execute([$status, $id]);
+        echo '<script>window.location.href="index.php?page=orders";</script>';
+        exit;
+    }
+}
+if (isset($_POST['delete_order_id'])) {
+    $id = intval($_POST['delete_order_id']);
+    // Xóa chi tiết đơn hàng trước
+    $stmt = $conn->prepare("DELETE FROM order_items WHERE order_id=?");
+    $stmt->execute([$id]);
+    // Xóa đơn hàng
+    $stmt = $conn->prepare("DELETE FROM orders WHERE id=?");
+    $stmt->execute([$id]);
+    echo '<script>window.location.href="index.php?page=orders";</script>';
+    exit;
+}
 ?>
 <h2>Quản lý đơn hàng</h2>
 <table>
@@ -56,14 +85,27 @@ function statusColor($status) {
             <?php echo statusLabel($order['status']); ?>
         </span></td>
         <td>
-            <a href="order_detail.php?id=<?php echo $order['id']; ?>" class="btn btn-detail">Chi tiết</a>
             <?php if($order['status'] === 'pending'): ?>
-                <a href="process_order.php?id=<?php echo $order['id']; ?>" class="btn btn-process">Duyệt</a>
-                <a href="cancel_order.php?id=<?php echo $order['id']; ?>" class="btn btn-cancel" onclick="return confirm('Bạn có chắc muốn hủy đơn này?');">Hủy</a>
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                    <button type="submit" name="action" value="process" class="btn btn-process">Duyệt</button>
+                </form>
+                <form method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn hủy đơn này?');">
+                    <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                    <button type="submit" name="action" value="cancel" class="btn btn-cancel">Hủy</button>
+                </form>
             <?php elseif($order['status'] === 'processing'): ?>
-                <a href="ship_order.php?id=<?php echo $order['id']; ?>" class="btn btn-process">Đã giao</a>
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                    <button type="submit" name="action" value="ship" class="btn btn-process">Đã giao</button>
+                </form>
             <?php else: ?>
-                <span class="btn btn-disabled">---</span>
+                <?php if($order['status'] === 'cancelled' || $order['status'] === 'delivered'): ?>
+                    <form method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa đơn hàng này?');">
+                        <input type="hidden" name="delete_order_id" value="<?php echo $order['id']; ?>">
+                        <button type="submit" class="btn btn-delete">Xóa</button>
+                    </form>
+                <?php endif; ?>
             <?php endif; ?>
         </td>
     </tr>
