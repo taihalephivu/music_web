@@ -54,7 +54,7 @@ if (isset($_SESSION['user']['id'])) {
                     <li><a href="brand.php?brand=Kawai">Kawai</a></li>
                 </ul>
             </li>
-            <li><a href="#sale" style="font-weight:600;font-size:1.05rem;color:#222;text-decoration:none;padding:10px 18px;border-radius:8px;transition:background 0.2s;">Summer Sale</a></li>
+            <li><a href="summer_sale.php" style="font-weight:600;font-size:1.05rem;color:#222;text-decoration:none;padding:10px 18px;border-radius:8px;transition:background 0.2s;">Summer Sale</a></li>
             <li><a href="#blog" style="font-weight:600;font-size:1.05rem;color:#222;text-decoration:none;padding:10px 18px;border-radius:8px;transition:background 0.2s;">Bài viết</a></li>
         </ul>
         <!-- Icon bên phải -->
@@ -108,8 +108,47 @@ if(document.getElementById('backToTopBtn')) {
 <style>
 .header { border-bottom: 1px solid #e0e0e0; }
 .nav-menu li, .nav-menu li a { white-space: nowrap; }
-.nav-menu li a:hover, .nav-menu li a:focus { background: #e3f2fd; color: #2196f3 !important; }
-.nav-menu .dropdown:hover .dropdown-menu, .nav-menu .dropdown:focus-within .dropdown-menu { display: block !important; }
+.nav-menu li a {
+  color: #222;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-menu li a:hover, .nav-menu li a:focus, .nav-menu li a.active {
+  background: #e3f2fd;
+  color: #2196f3 !important;
+}
+.nav-menu .dropdown:hover .dropdown-menu, .nav-menu .dropdown:focus-within .dropdown-menu {
+  display: block !important;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: #fff;
+  min-width: 180px;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 8px 24px rgba(33,150,243,0.13);
+  z-index: 100;
+  padding: 0.5rem 0;
+  border: 1px solid #e0e0e0;
+}
+.dropdown-menu li a {
+  color: #222;
+  font-weight: 500;
+  padding: 10px 24px;
+  border-radius: 0;
+  background: none;
+  transition: background 0.2s, color 0.2s;
+}
+.dropdown-menu li a:hover, .dropdown-menu li a:focus {
+  background: #e3f2fd;
+  color: #2196f3 !important;
+}
 .user-dropdown-content a:hover { background: #e3f2fd; color: #2196f3 !important; }
 .user-dropdown-content { transition: box-shadow 0.2s; }
 .user-dropdown:hover .user-dropdown-content, .user-dropdown:focus-within .user-dropdown-content { display: block !important; box-shadow: 0 8px 32px rgba(33,150,243,0.18); }

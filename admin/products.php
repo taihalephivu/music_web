@@ -14,52 +14,6 @@ $sql = "SELECT i.*, b.name as brand_name, c.name as category_name FROM instrumen
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'])) {
-    $name = trim($_POST['name']);
-    $description = trim($_POST['description']);
-    $price = floatval($_POST['price']);
-    $stock_quantity = intval($_POST['stock_quantity']);
-    $category_id = intval($_POST['category_id']);
-    $brand_id = intval($_POST['brand_id']);
-    $specifications = trim($_POST['specifications']);
-    $image_url = '';
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $target = '../assets/images/' . uniqid('product_') . '.' . $ext;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-            $image_url = 'assets/images/' . basename($target);
-        }
-    }
-    if (!empty($_POST['product_id'])) {
-        // Cập nhật sản phẩm
-        $id = intval($_POST['product_id']);
-        $sql = "UPDATE instruments SET name=?, description=?, category_id=?, brand_id=?, price=?, stock_quantity=?, specifications=?";
-        $params = [$name, $description, $category_id, $brand_id, $price, $stock_quantity, $specifications];
-        if ($image_url) {
-            $sql .= ", image_url=?";
-            $params[] = $image_url;
-        }
-        $sql .= " WHERE id=?";
-        $params[] = $id;
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-    } else {
-        // Thêm sản phẩm mới
-        $stmt = $conn->prepare("INSERT INTO instruments (name, description, category_id, brand_id, price, stock_quantity, image_url, specifications) VALUES (?,?,?,?,?,?,?,?)");
-        $stmt->execute([$name, $description, $category_id, $brand_id, $price, $stock_quantity, $image_url, $specifications]);
-    }
-    header('Location: index.php?page=products');
-    exit;
-}
-
-if (isset($_POST['delete_id'])) {
-    $id = intval($_POST['delete_id']);
-    $stmt = $conn->prepare("DELETE FROM instruments WHERE id=?");
-    $stmt->execute([$id]);
-    header('Location: index.php?page=products');
-    exit;
-}
 ?>
 <h2>Quản lý sản phẩm</h2>
 <a href="#" class="btn btn-primary" style="margin-bottom:18px;" onclick="showAddProductModal();return false;">+ Thêm sản phẩm</a>

@@ -50,21 +50,21 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <span class="music-note"><i class="fas fa-headphones"></i></span>
             <span class="music-note"><i class="fas fa-microphone"></i></span>
         </div>
-    </div>
-    <!-- Hero Section -->
-    <section class="hero" id="home">
+                    </div>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
         <div class="hero-bg-slides"></div>
         <div class="container hero-content">
             <h1>Khám phá dụng cụ âm nhạc chất lượng</h1>
             <p>Hàng nghìn dụng cụ âm nhạc từ các thương hiệu nổi tiếng trên toàn thế giới</p>
             <a href="#instruments" class="btn">
                 <i class="fas fa-guitar"></i> Khám phá ngay
-            </a>
-        </div>
-    </section>
-    <!-- Search Section -->
-    <section class="search-section">
-        <div class="container">
+                </a>
+            </div>
+        </section>
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="container">
             <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm dụng cụ âm nhạc, thương hiệu..." oninput="filterHomeProducts()">
         </div>
     </section>
@@ -137,9 +137,9 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <h3 class="category-name">Phụ kiện</h3>
                     <p class="category-count">Dây đàn & Phụ kiện</p>
                 </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
     <!-- Brands Section -->
     <section id="brands" class="brands-section">
@@ -152,7 +152,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="brand-card">
                     <img src="assets/images/brands/fender.png" alt="Fender" class="brand-logo">
                     <h3 class="brand-name">Fender</h3>
-                </div>
+                    </div>
                 <div class="brand-card">
                     <img src="assets/images/brands/yamaha.jpg" alt="Yamaha" class="brand-logo">
                     <h3 class="brand-name">Yamaha</h3>
@@ -160,7 +160,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="brand-card">
                     <img src="assets/images/brands/roland.png" alt="Roland" class="brand-logo">
                     <h3 class="brand-name">Roland</h3>
-                </div>
+                    </div>
                 <div class="brand-card">
                     <img src="assets/images/brands/gibson.png" alt="Gibson" class="brand-logo">
                     <h3 class="brand-name">Gibson</h3>
@@ -172,12 +172,12 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="brand-card">
                     <img src="assets/images/brands/kawai.png" alt="Kawai" class="brand-logo">
                     <h3 class="brand-name">Kawai</h3>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- About Section -->
+        <!-- About Section -->
     <section id="about" class="about-section">
         <div class="container">
             <div class="about-content">
@@ -208,10 +208,10 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <h3>Bảo hành chính hãng</h3>
                         <p>Bảo hành từ 1-3 năm</p>
                     </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
     </main>
 
     <!-- Cart Modal -->
