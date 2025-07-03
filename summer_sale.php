@@ -1,6 +1,15 @@
-<?php
-include 'header.php';
-?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Summer Sale</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<?php include 'header.php'; ?>
+<div class="container">
 <style>
 .summer-banner {
   background: linear-gradient(90deg, #fceabb 0%, #f8b500 100%);
@@ -180,9 +189,10 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 </script>
-<?php
-include 'footer.php';
-?>
+</div>
+<?php include 'footer.php'; ?>
+</body>
+</html>
 
 <!-- Mini Game Popup (vòng quay animation) -->
 <div id="miniGamePopup" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:9999;align-items:center;justify-content:center;">
