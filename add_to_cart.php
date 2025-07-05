@@ -47,6 +47,7 @@ if ($product_id <= 0) {
 }
 $db = new Database();
 $conn = $db->getConnection();
+
 // Kiểm tra sản phẩm đã có trong giỏ chưa
 $user_id = $_SESSION['user']['id'];
 $stmt = $conn->prepare('SELECT * FROM cart WHERE user_id = ? AND instrument_id = ?');
@@ -64,4 +65,5 @@ if ($cartItem) {
 // Quay lại trang trước
 $redirect = isset($_POST['redirect']) ? $_POST['redirect'] : 'index.php';
 header('Location: ' . $redirect);
+
 exit; 

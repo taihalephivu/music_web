@@ -83,15 +83,22 @@ function showCart() {
 
 
 function updateQuantity(instrumentId, change) {
-    const item = window.cartData.find(item => item.id === instrumentId);
-    if (!item) return;
-    item.quantity += change;
-    if (item.quantity <= 0) {
-        window.cartData = window.cartData.filter(item => item.id !== instrumentId);
-    }
-    saveCart();
-    updateCartCount();
-    showCart();
+    fetch('add_to_cart.php?action=update_quantity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: instrumentId, change: change })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            showNotification('Cập nhật số lượng thất bại!', 'error');
+        }
+    })
+    .catch(() => {
+        showNotification('Lỗi kết nối!', 'error');
+    });
 }
 
 function checkout() {
@@ -140,7 +147,6 @@ function showError(message) {
         `;
     }
 }
-
 window.addToCart = addToCart;
 window.saveCart = saveCart;
 window.loadCart = loadCart;

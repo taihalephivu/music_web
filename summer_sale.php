@@ -123,6 +123,12 @@
     <div class="brand">Yamaha</div>
     <span class="old-price">3.000.000đ</span>
     <span class="new-price">1.990.000đ</span>
+    <form method="post" action="add_to_cart.php" style="margin-top:10px;">
+      <input type="hidden" name="product_id" value="2">
+      <input type="hidden" name="sale_price" value="1990000">
+      <input type="hidden" name="redirect" value="summer_sale.php">
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Thêm vào giỏ</button>
+    </form>
   </div>
   <div class="summer-product">
     <span class="summer-sale-label">Sale</span>
@@ -131,6 +137,12 @@
     <div class="brand">Roland</div>
     <span class="old-price">15.000.000đ</span>
     <span class="new-price">11.500.000đ</span>
+    <form method="post" action="add_to_cart.php" style="margin-top:10px;">
+      <input type="hidden" name="product_id" value="3">
+      <input type="hidden" name="sale_price" value="11500000">
+      <input type="hidden" name="redirect" value="summer_sale.php">
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Thêm vào giỏ</button>
+    </form>
   </div>
   <div class="summer-product">
     <span class="summer-sale-label">Sale</span>
@@ -139,6 +151,12 @@
     <div class="brand">Pearl</div>
     <span class="old-price">12.000.000đ</span>
     <span class="new-price">8.900.000đ</span>
+    <form method="post" action="add_to_cart.php" style="margin-top:10px;">
+      <input type="hidden" name="product_id" value="4">
+      <input type="hidden" name="sale_price" value="8900000">
+      <input type="hidden" name="redirect" value="summer_sale.php">
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Thêm vào giỏ</button>
+    </form>
   </div>
   <div class="summer-product">
     <span class="summer-sale-label">Sale</span>
@@ -147,29 +165,12 @@
     <div class="brand">Fender</div>
     <span class="old-price">1.200.000đ</span>
     <span class="new-price">790.000đ</span>
-  </div>
-</div>
-
-<!-- Combo Ưu Đãi Mùa Hè -->
-<div class="summer-combo-section" style="max-width:1100px;margin:48px auto 0 auto;">
-  <h2 style="color:#f8b500;font-size:2rem;font-weight:bold;text-align:center;margin-bottom:24px;letter-spacing:1px;">Combo Ưu Đãi Mùa Hè</h2>
-  <div class="summer-combos" style="display:flex;flex-wrap:wrap;gap:32px;justify-content:center;">
-    <div class="summer-combo" style="background:#fffbe6;border-radius:14px;box-shadow:0 2px 12px rgba(248,181,0,0.08);width:340px;padding:22px 18px 24px 18px;position:relative;text-align:center;">
-      <span style="position:absolute;top:16px;left:16px;background:#ff9800;color:#fff;font-size:1rem;font-weight:bold;padding:5px 16px;border-radius:10px;box-shadow:0 2px 8px #ff980033;">Combo Hot</span>
-      <img src="assets/images/brands/yamaha.jpg" alt="Combo Guitar" style="width:120px;height:120px;object-fit:contain;margin-bottom:10px;">
-      <div style="font-size:1.15rem;font-weight:600;margin-bottom:6px;">Guitar Yamaha F310 + Bao đàn + Capo</div>
-      <div style="color:#888;font-size:1rem;margin-bottom:10px;">Combo lý tưởng cho người mới bắt đầu</div>
-      <span style="text-decoration:line-through;color:#bdbdbd;font-size:1.05rem;margin-right:10px;">3.400.000đ</span>
-      <span style="color:#f8b500;font-size:1.35rem;font-weight:bold;">2.390.000đ</span>
-    </div>
-    <div class="summer-combo" style="background:#fffbe6;border-radius:14px;box-shadow:0 2px 12px rgba(248,181,0,0.08);width:340px;padding:22px 18px 24px 18px;position:relative;text-align:center;">
-      <span style="position:absolute;top:16px;left:16px;background:#ff9800;color:#fff;font-size:1rem;font-weight:bold;padding:5px 16px;border-radius:10px;box-shadow:0 2px 8px #ff980033;">Combo Hot</span>
-      <img src="assets/images/brands/roland.png" alt="Combo Piano" style="width:120px;height:120px;object-fit:contain;margin-bottom:10px;">
-      <div style="font-size:1.15rem;font-weight:600;margin-bottom:6px;">Piano Roland FP-10 + Ghế + Tai nghe</div>
-      <div style="color:#888;font-size:1rem;margin-bottom:10px;">Combo tiết kiệm cho người yêu piano</div>
-      <span style="text-decoration:line-through;color:#bdbdbd;font-size:1.05rem;margin-right:10px;">16.200.000đ</span>
-      <span style="color:#f8b500;font-size:1.35rem;font-weight:bold;">12.500.000đ</span>
-    </div>
+    <form method="post" action="add_to_cart.php" style="margin-top:10px;">
+      <input type="hidden" name="product_id" value="1">
+      <input type="hidden" name="sale_price" value="790000">
+      <input type="hidden" name="redirect" value="summer_sale.php">
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Thêm vào giỏ</button>
+    </form>
   </div>
 </div>
 

@@ -4,6 +4,10 @@ if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
+// Xóa toàn bộ combo trong session khi vào giỏ hàng
+if (isset($_SESSION['combo_cart'][$_SESSION['user']['id']])) {
+    unset($_SESSION['combo_cart'][$_SESSION['user']['id']]);
+}
 
 require_once 'config/database.php';
 $db = new Database();
@@ -17,9 +21,46 @@ $stmt = $conn->prepare('SELECT c.instrument_id as id, i.name, i.price, i.image_u
 $stmt->execute([$user_id]);
 $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Lấy combo trong session
+$combo_cart = isset($_SESSION['combo_cart'][$user_id]) ? $_SESSION['combo_cart'][$user_id] : [];
+
+// Tính tổng tiền sản phẩm thường
 $total = 0;
+foreach ($cartItems as &$item) {
+    $sale_price = isset($_SESSION['cart_sale'][$user_id][$item['id']]) ? $_SESSION['cart_sale'][$user_id][$item['id']] : null;
+    $item['display_price'] = $sale_price ? $sale_price : $item['price'];
+    $total += $item['display_price'] * $item['quantity'];
+}
+unset($item);
+
+// Tính tổng tiền combo
+$combo_total = 0;
+foreach ($combo_cart as $combo) {
+    $combo_total += $combo['price'] * $combo['quantity'];
+}
+
+// Tổng tiền tất cả
+$total_all = $total + $combo_total;
+
+// Truyền dữ liệu giỏ hàng (bao gồm giá sale) sang JS
+$cart_data_js = [];
 foreach ($cartItems as $item) {
-    $total += $item['price'] * $item['quantity'];
+    $cart_data_js[] = [
+        'id' => $item['id'],
+        'name' => $item['name'],
+        'price' => $item['display_price'],
+        'quantity' => $item['quantity'],
+        'image_url' => $item['image_url']
+    ];
+}
+foreach ($combo_cart as $combo_id => $combo) {
+    $cart_data_js[] = [
+        'id' => $combo_id,
+        'name' => $combo['name'],
+        'price' => $combo['price'],
+        'quantity' => $combo['quantity'],
+        'is_combo' => true
+    ];
 }
 ?>
 <!DOCTYPE html>
@@ -343,9 +384,6 @@ foreach ($cartItems as $item) {
                             <input type="checkbox" id="selectAll" class="select-all-checkbox" onchange="toggleSelectAll()">
                             <label for="selectAll" class="select-all-label">Chọn tất cả</label>
                         </div>
-                        <button id="deleteSelectedBtn" class="delete-selected-btn" onclick="deleteSelectedItems()">
-                            <i class="fas fa-trash"></i> Xóa đã chọn
-                        </button>
                     </div>
                     <div class="cart-list">
                         <?php foreach ($cartItems as $item): ?>
@@ -357,7 +395,19 @@ foreach ($cartItems as $item) {
                                  onerror="this.src='assets/images/default.jpg'">
                             <div class="item-info">
                                 <div class="item-name"><?php echo htmlspecialchars($item['name']); ?></div>
-                                <div class="item-price"><?php echo number_format($item['price'], 0, ',', '.'); ?>₫</div>
+                                <div class="item-price">
+                                    <?php if (isset($_SESSION['cart_sale'][$user_id][$item['id']])): ?>
+                                        <span style="color:#ff9800;font-weight:bold;">Đang giảm giá</span><br>
+                                        <span style="text-decoration:line-through;color:#bbb;font-size:0.98em;margin-right:8px;">
+                                            <?php echo number_format($item['price'], 0, ',', '.'); ?>₫
+                                        </span>
+                                        <span style="color:#e65100;font-weight:700;">
+                                            <?php echo number_format($item['display_price'], 0, ',', '.'); ?>₫
+                                        </span>
+                                    <?php else: ?>
+                                        <?php echo number_format($item['display_price'], 0, ',', '.'); ?>₫
+                                    <?php endif; ?>
+                                </div>
                             </div>
                             <div class="item-quantity">
                                 <button class="quantity-btn" onclick="updateQuantity(<?php echo $item['id']; ?>, -1)">-</button>
@@ -365,9 +415,34 @@ foreach ($cartItems as $item) {
                                 <button class="quantity-btn" onclick="updateQuantity(<?php echo $item['id']; ?>, 1)">+</button>
                             </div>
                             <div class="item-total">
-                                <?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?>₫
+                                <?php echo number_format($item['display_price'] * $item['quantity'], 0, ',', '.'); ?>₫
                             </div>
                             <button class="item-delete" onclick="deleteCartItem(<?php echo $item['id']; ?>)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <?php endforeach; ?>
+                        <?php foreach ($combo_cart as $combo_id => $combo): ?>
+                        <div class="cart-item-row" style="background:#fffbe6;">
+                            <input type="checkbox" class="item-checkbox" value="combo_<?php echo $combo_id; ?>" onchange="updateDeleteButton()">
+                            <img src="assets/images/brands/combo.png" alt="Combo" class="item-image" onerror="this.src='assets/images/default.jpg'">
+                            <div class="item-info">
+                                <div class="item-name" style="color:#e65100;font-weight:700;"><i class="fas fa-gift"></i> <?php echo htmlspecialchars($combo['name']); ?> <span style="font-size:0.95em;color:#ff9800;">(Combo ưu đãi)</span></div>
+                                <div class="item-price">
+                                    <span style="color:#e65100;font-weight:700;">
+                                        <?php echo number_format($combo['price'], 0, ',', '.'); ?>₫
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="item-quantity">
+                                <button class="quantity-btn" onclick="updateComboQuantity('<?php echo $combo_id; ?>', -1)">-</button>
+                                <span class="quantity-display"><?php echo $combo['quantity']; ?></span>
+                                <button class="quantity-btn" onclick="updateComboQuantity('<?php echo $combo_id; ?>', 1)">+</button>
+                            </div>
+                            <div class="item-total">
+                                <?php echo number_format($combo['price'] * $combo['quantity'], 0, ',', '.'); ?>₫
+                            </div>
+                            <button class="item-delete" onclick="deleteComboItem('<?php echo $combo_id; ?>')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -378,7 +453,7 @@ foreach ($cartItems as $item) {
                     <div class="summary-title">Tóm tắt đơn hàng</div>
                     <div class="summary-item">
                         <span>Tạm tính:</span>
-                        <span><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
+                        <span><?php echo number_format($total_all, 0, ',', '.'); ?>₫</span>
                     </div>
                     <div class="summary-item">
                         <span>Phí vận chuyển:</span>
@@ -386,7 +461,7 @@ foreach ($cartItems as $item) {
                     </div>
                     <div class="summary-total">
                         <span>Tổng cộng:</span>
-                        <span><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
+                        <span><?php echo number_format($total_all, 0, ',', '.'); ?>₫</span>
                     </div>
                     <button class="checkout-btn" onclick="checkout()">
                         <i class="fas fa-credit-card"></i> Thanh toán
@@ -401,6 +476,8 @@ foreach ($cartItems as $item) {
     </main>
     <?php include 'footer.php'; ?>
     <script>
+        // Truyền dữ liệu giỏ hàng từ PHP sang JS
+        window.cartData = <?php echo json_encode($cart_data_js, JSON_UNESCAPED_UNICODE); ?>;
         function toggleSelectAll() {
             const selectAllCheckbox = document.getElementById('selectAll');
             const itemCheckboxes = document.querySelectorAll('.item-checkbox');
@@ -481,7 +558,7 @@ foreach ($cartItems as $item) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    product_id: instrumentId,
+                    id: instrumentId,
                     change: change
                 })
             })
@@ -495,8 +572,45 @@ foreach ($cartItems as $item) {
             })
             .catch(() => alert('Lỗi kết nối!'));
         }
+        function updateComboQuantity(comboId, change) {
+            fetch('add_to_cart.php?action=update_combo_quantity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    combo_id: comboId,
+                    change: change
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Cập nhật số lượng combo thất bại!');
+                }
+            })
+            .catch(() => alert('Lỗi kết nối!'));
+        }
+        function deleteComboItem(comboId) {
+            if (!confirm('Bạn có chắc muốn xóa combo này khỏi giỏ hàng?')) {
+                return;
+            }
+            fetch('add_to_cart.php?action=delete_combo_item&id=' + comboId, { 
+                method: 'POST' 
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Xóa combo thất bại!');
+                }
+            })
+            .catch(() => alert('Lỗi kết nối!'));
+        }
         function checkout() {
-            // Lấy lại giỏ hàng từ PHP (window.cartData)
             const cart = window.cartData || [];
             if (!cart.length) {
                 alert('Giỏ hàng trống!');
