@@ -1,3 +1,4 @@
+-- Database cho Music Store - Cửa hàng dụng cụ âm nhạc
 CREATE DATABASE IF NOT EXISTS music_web;
 USE music_web;
 
@@ -112,28 +113,3 @@ INSERT INTO instruments (name, description, category_id, brand_id, price, stock_
 ('Guitar Strings', 'Dây đàn guitar acoustic', 6, 1, 250000, 100, 'images/accessories/strings.jpg', 'Dây bronze, set 6 dây, gauge 12-53');
 
 ALTER TABLE users ADD COLUMN role ENUM('user','admin') DEFAULT 'user' AFTER address; 
-
--- Tạo bảng service_reviews để lưu đánh giá dịch vụ
-CREATE TABLE IF NOT EXISTS service_reviews (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT DEFAULT NULL,
-    product_quality INT NOT NULL CHECK (product_quality BETWEEN 1 AND 5),
-    delivery_service INT NOT NULL CHECK (delivery_service BETWEEN 1 AND 5),
-    customer_service INT NOT NULL CHECK (customer_service BETWEEN 1 AND 5),
-    comment TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Thêm dữ liệu mẫu cho service_reviews
-INSERT INTO service_reviews (user_id, product_quality, delivery_service, customer_service, comment, created_at) VALUES
-(NULL, 5, 4, 5, 'Sản phẩm chất lượng rất tốt, giao hàng nhanh chóng!', '2024-01-15 10:30:00'),
-(NULL, 4, 5, 4, 'Dịch vụ giao hàng tuyệt vời, nhân viên thân thiện', '2024-01-16 14:20:00'),
-(NULL, 5, 5, 5, 'Rất hài lòng với chất lượng sản phẩm và dịch vụ', '2024-01-17 09:15:00'),
-(NULL, 4, 4, 5, 'Sản phẩm đúng như mô tả, hỗ trợ khách hàng tốt', '2024-01-18 16:45:00'),
-(NULL, 5, 4, 4, 'Guitar rất đẹp, âm thanh hay, giao hàng đúng hẹn', '2024-01-19 11:30:00'),
-(NULL, 4, 5, 5, 'Nhân viên tư vấn nhiệt tình, sản phẩm chất lượng', '2024-01-20 13:20:00'),
-(NULL, 5, 5, 4, 'Đàn piano tuyệt vời, giao hàng cẩn thận', '2024-01-21 15:10:00'),
-(NULL, 4, 4, 5, 'Hài lòng với dịch vụ, sẽ mua lại', '2024-01-22 10:45:00'),
-(NULL, 5, 4, 5, 'Sản phẩm cao cấp, dịch vụ chuyên nghiệp', '2024-01-23 14:30:00'),
-(NULL, 4, 5, 4, 'Giao hàng nhanh, sản phẩm đẹp', '2024-01-24 12:15:00'); 
