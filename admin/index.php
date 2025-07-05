@@ -54,6 +54,27 @@ if (isset($_GET['page']) && $_GET['page'] === 'products') {
         exit;
     }
 }
+// XỬ LÝ POST CHO ĐÁNH GIÁ (nếu đang ở trang reviews)
+if (isset($_GET['page']) && $_GET['page'] === 'reviews') {
+    require_once '../config/database.php';
+    $db = new Database();
+    $conn = $db->getConnection();
+    if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['review_id'])) {
+        $review_id = intval($_POST['review_id']);
+        if ($review_id > 0) {
+            $stmt = $conn->prepare("DELETE FROM service_reviews WHERE id=?");
+            $result = $stmt->execute([$review_id]);
+            if ($result) {
+                header('Location: index.php?page=reviews&msg=deleted');
+            } else {
+                header('Location: index.php?page=reviews&msg=error');
+            }
+        } else {
+            header('Location: index.php?page=reviews&msg=error');
+        }
+        exit;
+    }
+}
 $page = $_GET['page'] ?? '';
 ?>
 <!DOCTYPE html>
@@ -183,6 +204,7 @@ $page = $_GET['page'] ?? '';
                 <a href="index.php?page=products"<?php if($page==='products') echo ' class="active"'; ?>><i class="fas fa-box"></i> Quản lý sản phẩm</a>
                 <a href="index.php?page=orders"<?php if($page==='orders') echo ' class="active"'; ?>><i class="fas fa-receipt"></i> Quản lý đơn hàng</a>
                 <a href="index.php?page=users"<?php if($page==='users') echo ' class="active"'; ?>><i class="fas fa-users"></i> Quản lý người dùng</a>
+                <a href="index.php?page=reviews"<?php if($page==='reviews') echo ' class="active"'; ?>><i class="fas fa-star"></i> Quản lý đánh giá</a>
             </div>
         </nav>
         <main class="admin-content">
@@ -200,6 +222,9 @@ $page = $_GET['page'] ?? '';
                     break;
                 case 'users':
                     include 'users.php';
+                    break;
+                case 'reviews':
+                    include 'reviews.php';
                     break;
                 default:
                     echo '<h2>Chào mừng đến với trang quản trị!</h2><p>Chọn chức năng ở menu bên trái để quản lý hệ thống.</p>';
