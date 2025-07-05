@@ -214,18 +214,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </section>
     </main>
 
-    <!-- Cart Modal -->
-    <div id="cartModal" class="cart-modal">
-        <div class="cart-content">
-            <div class="cart-header">
-                <h3 class="cart-title">Giỏ hàng</h3>
-                <button class="close-cart" onclick="closeCart()">&times;</button>
-            </div>
-            <div id="cartItems">
-                <!-- Cart items will be loaded here -->
-            </div>
-        </div>
-    </div>
+
 
     <script>
         window.isLoggedIn = <?php echo isset($_SESSION['user']) ? 'true' : 'false'; ?>;
@@ -233,7 +222,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="assets/js/user.js"></script>
     <script src="assets/js/cart.js"></script>
     <script src="assets/js/search.js"></script>
-    <script src="assets/js/main.js"></script>
     <script>
     // Lọc sản phẩm trên trang chủ bằng JS (chỉ filter DOM, không fetch API)
     function filterHomeProducts() {

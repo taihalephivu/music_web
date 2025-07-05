@@ -38,22 +38,44 @@ function addToCart(instrumentId) {
     }
     const instrument = window.instruments.find(i => i.id === instrumentId);
     if (!instrument) return;
-    const existingItem = window.cart.find(item => item.id === instrumentId);
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        window.cart.push({
-            id: instrument.id,
-            name: instrument.name,
-            price: instrument.price,
-            image_url: instrument.image_url,
-            quantity: 1
-        });
-    }
-    window.saveCart();
-    window.updateCartCount();
-    showNotification('Đã thêm vào giỏ hàng!');
+
+    // Gửi AJAX lên server
+    const formData = new FormData();
+    formData.append('product_id', instrumentId);
+
+    fetch('add_to_cart.php', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // Cập nhật localStorage
+            const existingItem = window.cart.find(item => item.id === instrumentId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                window.cart.push({
+                    id: instrument.id,
+                    name: instrument.name,
+                    price: instrument.price,
+                    image_url: instrument.image_url,
+                    quantity: 1
+                });
+            }
+            window.saveCart();
+            window.updateCartCount();
+            showNotification('Đã thêm vào giỏ hàng!');
+        } else {
+            showNotification('Thêm vào giỏ hàng thất bại!', 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Lỗi kết nối!', 'error');
+    });
 }
+window.addToCart = addToCart;
 
 // Lưu giỏ hàng vào localStorage
 function saveCart() {

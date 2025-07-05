@@ -81,10 +81,10 @@ if (isset($_SESSION['user']['id'])) {
                 </div>
             </div>
             <!-- Cart icon -->
-            <div class="cart-icon" onclick="showCart()" style="position:relative;cursor:pointer;">
+            <a href="cart.php" class="cart-icon" style="position:relative;cursor:pointer;text-decoration:none;">
                 <i class="fas fa-shopping-cart" style="font-size:1.5rem;color:#111;"></i>
                 <span class="cart-count" id="cartCount" style="position:absolute;top:-8px;right:-10px;background:#ff4757;color:#fff;font-size:0.95rem;font-weight:700;padding:2px 8px;border-radius:12px;box-shadow:0 2px 8px #ff475799;"><?php echo $cartCount; ?></span>
-            </div>
+            </a>
         </div>
     </nav>
 </header>
