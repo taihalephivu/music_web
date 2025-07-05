@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../config/database.php';
 
 if (!isset($_SESSION['user']['id'])) {
@@ -41,7 +43,6 @@ $order_id = $db->lastInsertId();
 // Lưu từng sản phẩm
 $stmt2 = $db->prepare('INSERT INTO order_items (order_id, instrument_id, quantity, price) VALUES (?, ?, ?, ?)');
 foreach ($cart as $item) {
-    if (isset($item['is_combo']) && $item['is_combo']) continue; // Bỏ qua combo
     $stmt2->execute([$order_id, $item['id'], $item['quantity'], $item['price']]);
 }
 
