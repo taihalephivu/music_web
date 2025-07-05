@@ -110,7 +110,7 @@
   <h2 style="color:#f8b500;font-size:1.4rem;font-weight:bold;margin-bottom:18px;">Nhập mã giảm giá Summer Sale</h2>
   <input id="voucherInput" type="text" placeholder="Nhập mã (ví dụ: SUMMER2024)" style="padding:10px 18px;border-radius:8px;border:1px solid #f8b500;font-size:1.1rem;width:70%;margin-bottom:12px;">
   <br>
-  <button onclick="window.checkVoucher()" style="background:#f8b500;color:#fff;font-weight:bold;padding:10px 28px;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">Áp dụng</button>
+  <button onclick="checkVoucher()" style="background:#f8b500;color:#fff;font-weight:bold;padding:10px 28px;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">Áp dụng</button>
   <div id="voucherMsg" style="margin-top:16px;font-size:1.1rem;"></div>
 </div>
 
@@ -188,6 +188,33 @@ function updateCountdown() {
 }
 setInterval(updateCountdown, 1000);
 updateCountdown();
+
+// Hàm kiểm tra voucher
+function checkVoucher() {
+    const voucherInput = document.getElementById('voucherInput');
+    const voucherMsg = document.getElementById('voucherMsg');
+    const voucher = voucherInput.value.trim().toUpperCase();
+    
+    if (!voucher) {
+        voucherMsg.innerHTML = '<span style="color:#ff5252;">Vui lòng nhập mã giảm giá!</span>';
+        return;
+    }
+    
+    // Danh sách voucher hợp lệ
+    const validVouchers = {
+        'SUMMER2024': { discount: 20, message: 'Giảm 20% cho tất cả sản phẩm!' },
+        'MUSIC50': { discount: 50, message: 'Giảm 50% cho sản phẩm có giá trên 10 triệu!' },
+        'NEWUSER': { discount: 15, message: 'Giảm 15% cho khách hàng mới!' }
+    };
+    
+    if (validVouchers[voucher]) {
+        voucherMsg.innerHTML = `<span style="color:#4caf50;">✓ ${validVouchers[voucher].message}</span>`;
+        voucherInput.style.borderColor = '#4caf50';
+    } else {
+        voucherMsg.innerHTML = '<span style="color:#ff5252;">✗ Mã giảm giá không hợp lệ!</span>';
+        voucherInput.style.borderColor = '#ff5252';
+    }
+}
 </script>
 </div>
 <?php include 'footer.php'; ?>
