@@ -2,22 +2,18 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Tính số lượng giỏ hàng đơn giản
 $cartCount = 0;
-$cartData = [];
 if (isset($_SESSION['user']['id'])) {
     require_once 'config/database.php';
     $db = new Database();
     $conn = $db->getConnection();
-    $user_id = $_SESSION['user']['id'];
-    $stmt = $conn->prepare('SELECT c.instrument_id as id, i.name, i.price, i.image_url, c.quantity 
-                            FROM cart c 
-                            JOIN instruments i ON c.instrument_id = i.id 
-                            WHERE c.user_id = ?');
-    $stmt->execute([$user_id]);
-    $cartData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($cartData as $item) {
-        $cartCount += $item['quantity'];
-    }
+    
+    $stmt = $conn->prepare('SELECT SUM(quantity) as total FROM cart WHERE user_id = ?');
+    $stmt->execute([$_SESSION['user']['id']]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $cartCount = $result['total'] ?? 0;
 }
 ?>
 <!-- Header -->
@@ -83,7 +79,9 @@ if (isset($_SESSION['user']['id'])) {
             <!-- Cart icon -->
             <a href="cart.php" class="cart-icon" style="position:relative;cursor:pointer;text-decoration:none;">
                 <i class="fas fa-shopping-cart" style="font-size:1.5rem;color:#111;"></i>
-                <span class="cart-count" id="cartCount" style="position:absolute;top:-8px;right:-10px;background:#ff4757;color:#fff;font-size:0.95rem;font-weight:700;padding:2px 8px;border-radius:12px;box-shadow:0 2px 8px #ff475799;"><?php echo $cartCount; ?></span>
+                <?php if ($cartCount > 0): ?>
+                <span class="cart-count" id="cartCount" style="position:absolute;top:-8px;right:-10px;background:#ff4757;color:#fff;font-size:0.8rem;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;box-shadow:0 2px 8px #ff475799;"><?php echo $cartCount; ?></span>
+                <?php endif; ?>
             </a>
         </div>
     </nav>
@@ -99,12 +97,11 @@ window.addEventListener('scroll', function() {
 });
 // Cuộn lên đầu trang khi nhấn
 if(document.getElementById('backToTopBtn')) {
-  document.getElementById('backToTopBtn').onclick = function() {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  };
+    document.getElementById('backToTopBtn').onclick = function() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
 }
 </script>
-<script>window.cartData = <?php echo json_encode($cartData); ?>;</script>
 <style>
 .header { border-bottom: 1px solid #e0e0e0; }
 .nav-menu li, .nav-menu li a { white-space: nowrap; }

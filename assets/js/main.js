@@ -1,6 +1,7 @@
 // Biến toàn cục
-// window.instruments = [];
-// window.filteredInstruments = [];
+window.instruments = [];
+window.filteredInstruments = [];
+window.cart = window.cart || [];
 
 // Khởi tạo trang web
 window.addEventListener('DOMContentLoaded', function() {
