@@ -110,7 +110,7 @@
   <h2 style="color:#f8b500;font-size:1.4rem;font-weight:bold;margin-bottom:18px;">Nhập mã giảm giá Summer Sale</h2>
   <input id="voucherInput" type="text" placeholder="Nhập mã (ví dụ: SUMMER2024)" style="padding:10px 18px;border-radius:8px;border:1px solid #f8b500;font-size:1.1rem;width:70%;margin-bottom:12px;">
   <br>
-  <button onclick="window.checkVoucher()" style="background:#f8b500;color:#fff;font-weight:bold;padding:10px 28px;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">Áp dụng</button>
+  <button onclick="checkVoucher()" style="background:#f8b500;color:#fff;font-weight:bold;padding:10px 28px;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">Áp dụng</button>
   <div id="voucherMsg" style="margin-top:16px;font-size:1.1rem;"></div>
 </div>
 
@@ -123,12 +123,6 @@
     <div class="brand">Yamaha</div>
     <span class="old-price">3.000.000đ</span>
     <span class="new-price">1.990.000đ</span>
-    <form method="post" action="add_to_cart.php" style="margin-top:10px;">
-      <input type="hidden" name="product_id" value="2">
-      <input type="hidden" name="sale_price" value="1990000">
-      <input type="hidden" name="redirect" value="summer_sale.php">
-      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Thêm vào giỏ</button>
-    </form>
   </div>
   <div class="summer-product">
     <span class="summer-sale-label">Sale</span>
@@ -137,12 +131,6 @@
     <div class="brand">Roland</div>
     <span class="old-price">15.000.000đ</span>
     <span class="new-price">11.500.000đ</span>
-    <form method="post" action="add_to_cart.php" style="margin-top:10px;">
-      <input type="hidden" name="product_id" value="3">
-      <input type="hidden" name="sale_price" value="11500000">
-      <input type="hidden" name="redirect" value="summer_sale.php">
-      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Thêm vào giỏ</button>
-    </form>
   </div>
   <div class="summer-product">
     <span class="summer-sale-label">Sale</span>
@@ -151,12 +139,6 @@
     <div class="brand">Pearl</div>
     <span class="old-price">12.000.000đ</span>
     <span class="new-price">8.900.000đ</span>
-    <form method="post" action="add_to_cart.php" style="margin-top:10px;">
-      <input type="hidden" name="product_id" value="4">
-      <input type="hidden" name="sale_price" value="8900000">
-      <input type="hidden" name="redirect" value="summer_sale.php">
-      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Thêm vào giỏ</button>
-    </form>
   </div>
   <div class="summer-product">
     <span class="summer-sale-label">Sale</span>
@@ -165,12 +147,29 @@
     <div class="brand">Fender</div>
     <span class="old-price">1.200.000đ</span>
     <span class="new-price">790.000đ</span>
-    <form method="post" action="add_to_cart.php" style="margin-top:10px;">
-      <input type="hidden" name="product_id" value="1">
-      <input type="hidden" name="sale_price" value="790000">
-      <input type="hidden" name="redirect" value="summer_sale.php">
-      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">Thêm vào giỏ</button>
-    </form>
+  </div>
+</div>
+
+<!-- Combo Ưu Đãi Mùa Hè -->
+<div class="summer-combo-section" style="max-width:1100px;margin:48px auto 0 auto;">
+  <h2 style="color:#f8b500;font-size:2rem;font-weight:bold;text-align:center;margin-bottom:24px;letter-spacing:1px;">Combo Ưu Đãi Mùa Hè</h2>
+  <div class="summer-combos" style="display:flex;flex-wrap:wrap;gap:32px;justify-content:center;">
+    <div class="summer-combo" style="background:#fffbe6;border-radius:14px;box-shadow:0 2px 12px rgba(248,181,0,0.08);width:340px;padding:22px 18px 24px 18px;position:relative;text-align:center;">
+      <span style="position:absolute;top:16px;left:16px;background:#ff9800;color:#fff;font-size:1rem;font-weight:bold;padding:5px 16px;border-radius:10px;box-shadow:0 2px 8px #ff980033;">Combo Hot</span>
+      <img src="assets/images/brands/yamaha.jpg" alt="Combo Guitar" style="width:120px;height:120px;object-fit:contain;margin-bottom:10px;">
+      <div style="font-size:1.15rem;font-weight:600;margin-bottom:6px;">Guitar Yamaha F310 + Bao đàn + Capo</div>
+      <div style="color:#888;font-size:1rem;margin-bottom:10px;">Combo lý tưởng cho người mới bắt đầu</div>
+      <span style="text-decoration:line-through;color:#bdbdbd;font-size:1.05rem;margin-right:10px;">3.400.000đ</span>
+      <span style="color:#f8b500;font-size:1.35rem;font-weight:bold;">2.390.000đ</span>
+    </div>
+    <div class="summer-combo" style="background:#fffbe6;border-radius:14px;box-shadow:0 2px 12px rgba(248,181,0,0.08);width:340px;padding:22px 18px 24px 18px;position:relative;text-align:center;">
+      <span style="position:absolute;top:16px;left:16px;background:#ff9800;color:#fff;font-size:1rem;font-weight:bold;padding:5px 16px;border-radius:10px;box-shadow:0 2px 8px #ff980033;">Combo Hot</span>
+      <img src="assets/images/brands/roland.png" alt="Combo Piano" style="width:120px;height:120px;object-fit:contain;margin-bottom:10px;">
+      <div style="font-size:1.15rem;font-weight:600;margin-bottom:6px;">Piano Roland FP-10 + Ghế + Tai nghe</div>
+      <div style="color:#888;font-size:1rem;margin-bottom:10px;">Combo tiết kiệm cho người yêu piano</div>
+      <span style="text-decoration:line-through;color:#bdbdbd;font-size:1.05rem;margin-right:10px;">16.200.000đ</span>
+      <span style="color:#f8b500;font-size:1.35rem;font-weight:bold;">12.500.000đ</span>
+    </div>
   </div>
 </div>
 
@@ -189,6 +188,33 @@ function updateCountdown() {
 }
 setInterval(updateCountdown, 1000);
 updateCountdown();
+
+// Hàm kiểm tra voucher
+function checkVoucher() {
+    const voucherInput = document.getElementById('voucherInput');
+    const voucherMsg = document.getElementById('voucherMsg');
+    const voucher = voucherInput.value.trim().toUpperCase();
+    
+    if (!voucher) {
+        voucherMsg.innerHTML = '<span style="color:#ff5252;">Vui lòng nhập mã giảm giá!</span>';
+        return;
+    }
+    
+    // Danh sách voucher hợp lệ
+    const validVouchers = {
+        'SUMMER2024': { discount: 20, message: 'Giảm 20% cho tất cả sản phẩm!' },
+        'MUSIC50': { discount: 50, message: 'Giảm 50% cho sản phẩm có giá trên 10 triệu!' },
+        'NEWUSER': { discount: 15, message: 'Giảm 15% cho khách hàng mới!' }
+    };
+    
+    if (validVouchers[voucher]) {
+        voucherMsg.innerHTML = `<span style="color:#4caf50;">✓ ${validVouchers[voucher].message}</span>`;
+        voucherInput.style.borderColor = '#4caf50';
+    } else {
+        voucherMsg.innerHTML = '<span style="color:#ff5252;">✗ Mã giảm giá không hợp lệ!</span>';
+        voucherInput.style.borderColor = '#ff5252';
+    }
+}
 </script>
 </div>
 <?php include 'footer.php'; ?>
