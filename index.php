@@ -3,11 +3,24 @@
 require_once 'config/database.php';
 $db = new Database();
 $conn = $db->getConnection();
-// Lấy 8 sản phẩm mới nhất
+
+// Phân trang
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$per_page = 9; // 9 sản phẩm mỗi trang
+$offset = ($page - 1) * $per_page;
+
+// Đếm tổng số sản phẩm
+$count_sql = "SELECT COUNT(*) as total FROM instruments";
+$count_stmt = $conn->prepare($count_sql);
+$count_stmt->execute();
+$total_products = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
+$total_pages = ceil($total_products / $per_page);
+
+// Lấy sản phẩm theo trang
 $sql = "SELECT i.*, b.name as brand_name, c.name as category_name FROM instruments i
         LEFT JOIN brands b ON i.brand_id = b.id
         LEFT JOIN categories c ON i.category_id = c.id
-        ORDER BY i.id DESC LIMIT 8";
+        ORDER BY i.id DESC LIMIT $per_page OFFSET $offset";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -71,7 +84,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Instruments Section -->
     <section id="instruments" class="container">
         <div class="section-header">
-            <h2><i class="fas fa-guitar"></i> Dụng cụ âm nhạc nổi bật</h2>
+            <h2><i class="fas fa-guitar"></i> Tất cả dụng cụ âm nhạc</h2>
             <p>Khám phá bộ sưu tập dụng cụ âm nhạc chất lượng cao</p>
         </div>
         <div id="musicGrid" class="instruments-grid">
@@ -98,6 +111,46 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             <?php endforeach; endif; ?>
         </div>
+        
+        <!-- Phân trang -->
+        <?php if ($total_pages > 1): ?>
+        <div class="pagination-container">
+            <div class="pagination-info">
+                Hiển thị <?php echo ($offset + 1); ?> - <?php echo min($offset + $per_page, $total_products); ?> 
+                trong tổng số <?php echo $total_products; ?> sản phẩm
+            </div>
+            <div class="pagination">
+                <?php if ($page > 1): ?>
+                    <a href="?page=1" class="page-link" title="Trang đầu">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    <a href="?page=<?php echo $page - 1; ?>" class="page-link" title="Trang trước">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                <?php endif; ?>
+                
+                <?php
+                $start_page = max(1, $page - 2);
+                $end_page = min($total_pages, $page + 2);
+                
+                for ($i = $start_page; $i <= $end_page; $i++):
+                ?>
+                    <a href="?page=<?php echo $i; ?>" class="page-link <?php echo $i == $page ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
+                
+                <?php if ($page < $total_pages): ?>
+                    <a href="?page=<?php echo $page + 1; ?>" class="page-link" title="Trang sau">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page=<?php echo $total_pages; ?>" class="page-link" title="Trang cuối">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endif; ?>
     </section>
     <!-- Categories Section -->
     <section id="categories" class="categories-section">
@@ -177,41 +230,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </section>
 
-        <!-- About Section -->
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="about-content">
-                <h2>Về Music Store</h2>
-                <p>
-                    Music Store là cửa hàng dụng cụ âm nhạc trực tuyến hàng đầu, cung cấp hàng nghìn dụng cụ âm nhạc 
-                    chất lượng cao từ các thương hiệu nổi tiếng trên toàn thế giới. Chúng tôi cam kết mang đến trải nghiệm 
-                    mua sắm tuyệt vời nhất cho người yêu âm nhạc.
-                </p>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <i class="fas fa-award feature-icon"></i>
-                        <h3>Chất lượng cao</h3>
-                        <p>Dụng cụ âm nhạc chính hãng 100%</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-shipping-fast feature-icon"></i>
-                        <h3>Giao hàng nhanh</h3>
-                        <p>Giao hàng toàn quốc trong 24h</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-headset feature-icon"></i>
-                        <h3>Hỗ trợ 24/7</h3>
-                        <p>Tư vấn và hỗ trợ mọi lúc</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-shield-alt feature-icon"></i>
-                        <h3>Bảo hành chính hãng</h3>
-                        <p>Bảo hành từ 1-3 năm</p>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- Customer Reviews Section -->
@@ -283,6 +301,42 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     <?php endforeach;
                 } ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <h2>Về Music Store</h2>
+                <p>
+                    Music Store là cửa hàng dụng cụ âm nhạc trực tuyến hàng đầu, cung cấp hàng nghìn dụng cụ âm nhạc 
+                    chất lượng cao từ các thương hiệu nổi tiếng trên toàn thế giới. Chúng tôi cam kết mang đến trải nghiệm 
+                    mua sắm tuyệt vời nhất cho người yêu âm nhạc.
+                </p>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-award feature-icon"></i>
+                        <h3>Chất lượng cao</h3>
+                        <p>Dụng cụ âm nhạc chính hãng 100%</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shipping-fast feature-icon"></i>
+                        <h3>Giao hàng nhanh</h3>
+                        <p>Giao hàng toàn quốc trong 24h</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-headset feature-icon"></i>
+                        <h3>Hỗ trợ 24/7</h3>
+                        <p>Tư vấn và hỗ trợ mọi lúc</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt feature-icon"></i>
+                        <h3>Bảo hành chính hãng</h3>
+                        <p>Bảo hành từ 1-3 năm</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -630,6 +684,83 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .reviews-track {
             gap: 25px;
             animation-duration: 30s;
+        }
+    }
+    
+    /* Phân trang */
+    .pagination-container {
+        margin-top: 40px;
+        text-align: center;
+    }
+    .pagination-info {
+        margin-bottom: 20px;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 8px 12px;
+        background: #fff;
+        color: #333;
+        text-decoration: none;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        font-weight: 500;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .page-link:hover {
+        background: #2196f3;
+        color: #fff;
+        border-color: #2196f3;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(33,150,243,0.2);
+    }
+    .page-link.active {
+        background: #2196f3;
+        color: #fff;
+        border-color: #2196f3;
+        box-shadow: 0 4px 8px rgba(33,150,243,0.2);
+    }
+    .page-link i {
+        font-size: 0.9rem;
+    }
+    
+    /* Responsive cho phân trang */
+    @media (max-width: 768px) {
+        .pagination {
+            gap: 6px;
+        }
+        .page-link {
+            min-width: 36px;
+            height: 36px;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+        }
+        .pagination-info {
+            font-size: 0.8rem;
+        }
+    }
+    @media (max-width: 480px) {
+        .pagination {
+            gap: 4px;
+        }
+        .page-link {
+            min-width: 32px;
+            height: 32px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
         }
     }
     </style>

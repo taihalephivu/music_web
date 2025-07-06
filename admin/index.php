@@ -20,9 +20,9 @@ if (isset($_GET['page']) && $_GET['page'] === 'products') {
         $image_url = '';
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-            $target = '../assets/images/' . uniqid('product_') . '.' . $ext;
+            $target = '../assets/images/products/' . uniqid('product_') . '.' . $ext;
             if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-                $image_url = 'assets/images/' . basename($target);
+                $image_url = 'assets/images/products/' . basename($target);
             }
         }
         if (!empty($_POST['product_id'])) {

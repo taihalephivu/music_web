@@ -498,8 +498,8 @@ foreach ($cartItems as $item) {
             .catch(() => alert('Lỗi kết nối!'));
         }
         function checkout() {
-            // Lấy lại giỏ hàng từ PHP (window.cartData)
-            const cart = window.cartData || [];
+            // Lấy dữ liệu giỏ hàng từ PHP
+            const cart = <?php echo json_encode($cartItems); ?>;
             if (!cart.length) {
                 alert('Giỏ hàng trống!');
                 return;
