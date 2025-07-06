@@ -4,28 +4,46 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once 'config/database.php';
 
-// API: Lấy thông báo cho user
+// API: Đánh dấu đã đọc thông báo (đơn giản chỉ cần cờ)
+if (isset($_GET['action']) && $_GET['action'] === 'mark_read' && isset($_SESSION['user']['id'])) {
+    $_SESSION['notification_read'] = true;
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true]);
+    exit;
+}
+
+// API: Lấy số lượng thông báo chưa đọc (nếu đã đọc thì trả về 0)
+if (isset($_GET['action']) && $_GET['action'] === 'get_count' && isset($_SESSION['user']['id'])) {
+    if (!empty($_SESSION['notification_read'])) {
+        $total_count = 0;
+    } else {
+        $user_id = $_SESSION['user']['id'];
+        $db = new Database();
+        $conn = $db->getConnection();
+        $stmt = $conn->prepare('SELECT COUNT(*) as count FROM orders 
+                               WHERE user_id = ? 
+                               AND status IN ("pending", "processing", "shipped", "delivered", "cancelled")');
+        $stmt->execute([$user_id]);
+        $total_count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    }
+    header('Content-Type: application/json');
+    echo json_encode(['count' => $total_count]);
+    exit;
+}
+
+// API: Lấy danh sách thông báo (không cần phân biệt đã đọc)
 if (isset($_GET['action']) && $_GET['action'] === 'get_notifications' && isset($_SESSION['user']['id'])) {
     $user_id = $_SESSION['user']['id'];
     $db = new Database();
     $conn = $db->getConnection();
-    
-    // Kiểm tra thời gian đã đọc thông báo
-    $read_at = $_SESSION['notifications_read_at'] ?? '1970-01-01 00:00:00';
-    
-    // Lấy thông báo đơn hàng (các trạng thái: pending, processing, shipped, delivered, cancelled)
     $stmt = $conn->prepare('SELECT o.id, o.total_amount, o.status, o.created_at
                            FROM orders o 
                            WHERE o.user_id = ? 
-                           AND o.created_at > ?
                            AND o.status IN ("pending", "processing", "shipped", "delivered", "cancelled")
                            ORDER BY o.created_at DESC LIMIT 10');
-    $stmt->execute([$user_id, $read_at]);
+    $stmt->execute([$user_id]);
     $order_notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
     $notifications = [];
-    
-    // Thêm thông báo đơn hàng
     foreach ($order_notifications as $order) {
         $status_text = getStatusText($order['status']);
         $notifications[] = [
@@ -37,23 +55,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_notifications' && isset($
             'status' => $order['status']
         ];
     }
-    
     header('Content-Type: application/json');
     echo json_encode($notifications);
-    exit;
-}
-
-// API: Đánh dấu thông báo đã đọc
-if (isset($_GET['action']) && $_GET['action'] === 'mark_read' && isset($_SESSION['user']['id'])) {
-    $user_id = $_SESSION['user']['id'];
-    $db = new Database();
-    $conn = $db->getConnection();
-    
-    // Lưu thời gian đánh dấu đã đọc vào session
-    $_SESSION['notifications_read_at'] = date('Y-m-d H:i:s');
-    
-    header('Content-Type: application/json');
-    echo json_encode(['success' => true]);
     exit;
 }
 
@@ -93,28 +96,6 @@ function getStatusText($status) {
         default:
             return 'Không xác định';
     }
-}
-
-// API: Lấy số lượng thông báo chưa đọc
-if (isset($_GET['action']) && $_GET['action'] === 'get_count' && isset($_SESSION['user']['id'])) {
-    $user_id = $_SESSION['user']['id'];
-    $db = new Database();
-    $conn = $db->getConnection();
-    
-    // Kiểm tra thời gian đã đọc thông báo
-    $read_at = $_SESSION['notifications_read_at'] ?? '1970-01-01 00:00:00';
-    
-    // Đếm đơn hàng có cập nhật trạng thái mới
-    $stmt = $conn->prepare('SELECT COUNT(*) as count FROM orders 
-                           WHERE user_id = ? 
-                           AND created_at > ?
-                           AND status IN ("pending", "processing", "shipped", "delivered", "cancelled")');
-    $stmt->execute([$user_id, $read_at]);
-    $total_count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
-    
-    header('Content-Type: application/json');
-    echo json_encode(['count' => $total_count]);
-    exit;
 }
 
 // Nếu không phải API call, trả về lỗi

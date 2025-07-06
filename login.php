@@ -18,6 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($user && password_verify($password, $user['password'])) {
+            // Ghi nhớ tài khoản bằng cookie
+            if (isset($_POST['remember_me']) && $_POST['remember_me'] == '1') {
+                setcookie('remember_user', $username, time() + 30*24*60*60, '/');
+            } else {
+                setcookie('remember_user', '', time() - 3600, '/');
+            }
             // Kiểm tra role để redirect
             if ($user['role'] === 'admin') {
                 $_SESSION['admin'] = [
@@ -88,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="post">
             <div class="form-group">
                 <label for="username">Tên đăng nhập hoặc Email</label>
-                <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>" required autofocus>
+                <input type="text" id="username" name="username" value="<?php echo isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['remember_user']) : htmlspecialchars($_POST['username'] ?? ''); ?>" required autofocus>
             </div>
             
             <div class="form-group">
@@ -96,6 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" id="password" name="password" required>
             </div>
             
+            <label style="display:flex;align-items:center;gap:6px;margin:8px 0 16px 0;">
+                <input type="checkbox" name="remember_me" value="1" <?php if(isset($_COOKIE['remember_user'])) echo 'checked'; ?>> Ghi nhớ tài khoản
+            </label>
+
             <button type="submit" class="login-btn">
                 <i class="fas fa-sign-in-alt"></i> Đăng nhập
             </button>

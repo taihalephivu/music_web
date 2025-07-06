@@ -108,7 +108,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>">
                                 <button type="submit" class="btn">Thêm vào giỏ</button>
                             </form>
-                            <button class="btn btn-details">Chi tiết</button>
+                            <a class="btn btn-details" href="product_detail.php?id=<?php echo $p['id']; ?>">Chi tiết</a>
                         </div>
                     </div>
                 </div>

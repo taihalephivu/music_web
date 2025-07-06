@@ -1,9 +1,44 @@
 <?php
+// Tăng thời gian sống session lên 7 ngày
+ini_set('session.gc_maxlifetime', 604800);
+session_set_cookie_params(604800);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
+    exit;
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'get_count') {
+    header('Content-Type: application/json');
+    if (!isset($_SESSION['user']['id'])) {
+        echo json_encode(['success' => false, 'message' => 'Chưa đăng nhập']);
+        exit;
+    }
+    try {
+        require_once 'config/database.php';
+        $db = new Database();
+        $conn = $db->getConnection();
+        $stmt = $conn->prepare('SELECT SUM(quantity) as total FROM cart WHERE user_id = ?');
+        $stmt->execute([$_SESSION['user']['id']]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $cartCount = $result['total'] ?? 0;
+        $readCount = $_SESSION['cart_count_read'] ?? 0;
+        $showBadge = ($cartCount > 0 && $cartCount != $readCount);
+        echo json_encode([
+            'success' => true,
+            'count' => $cartCount,
+            'showBadge' => $showBadge
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Lỗi server',
+            'count' => 0,
+            'showBadge' => false
+        ]);
+    }
     exit;
 }
 
@@ -23,6 +58,8 @@ $total = 0;
 foreach ($cartItems as $item) {
     $total += $item['price'] * $item['quantity'];
 }
+// Đánh dấu đã đọc số lượng giỏ hàng khi vào trang cart
+$_SESSION['cart_count_read'] = array_sum(array_column($cartItems, 'quantity'));
 ?>
 <!DOCTYPE html>
 <html lang="vi">
