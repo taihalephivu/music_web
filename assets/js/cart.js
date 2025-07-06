@@ -1,4 +1,3 @@
-// Biến toàn cục
 window.cartData = window.cartData || [];
 
 // Thêm vào giỏ hàng
@@ -22,7 +21,7 @@ function addToCart(instrumentId) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            // Cập nhật số giỏ hàng
+            // Cập nhật giỏ hàng
             updateCartCount(data.cartCount || 0);
             showNotification('Đã thêm vào giỏ hàng!');
         } else {
@@ -34,7 +33,7 @@ function addToCart(instrumentId) {
     });
 }
 
-// Cập nhật số giỏ hàng đơn giản
+// Cập nhật số giỏ hàng
 function updateCartCount(count) {
     const cartCountElement = document.getElementById('cartCount');
     if (!cartCountElement) {
@@ -62,7 +61,7 @@ function updateCartCount(count) {
 function refreshCartCount() {
     if (!window.isLoggedIn) return;
     
-    fetch('get_cart_count.php')
+    fetch('cart.php?action=get_count')
         .then(res => res.json())
         .then(data => {
             if (data.success) {
@@ -157,7 +156,7 @@ function showError(message) {
     }
 }
 
-// Hàm clearCart
+// xóa giỏ hàng
 function clearCart() {
     if (confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')) {
         window.cartData = [];
@@ -167,7 +166,7 @@ function clearCart() {
     }
 }
 
-// Hàm closeCart
+// đóng giỏ hàng
 function closeCart() {
     const modal = document.getElementById('cartModal');
     if (modal) {
@@ -189,14 +188,13 @@ window.formatPrice = formatPrice;
 window.showNotification = showNotification;
 window.showError = showError;
 
-// Thiết lập các event listeners
+// các sự kiên 
 function setupEventListeners() {
     // Tìm kiếm
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', window.filterHomeProducts || function(){});
     }
-    // Smooth scrolling cho navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -211,7 +209,7 @@ function setupEventListeners() {
     });
 }
 
-// Tự động load cart khi trang load
+// Tự động load giỏ hàng
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         loadCart();

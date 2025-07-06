@@ -5,7 +5,7 @@ function showProfileModal() {
     modal.style.display = 'block';
     modal.innerHTML = '<div style="padding:2rem; text-align:center;"><div class="loading"></div>Đang tải hồ sơ...</div>';
     document.body.appendChild(modal);
-    fetch('page/profile.php')
+    fetch('user/profile.php')
         .then(res => res.text())
         .then(html => { modal.innerHTML = html; })
         .catch(() => { modal.innerHTML = '<div style="padding:2rem; color:#ff4757;">Lỗi tải hồ sơ!</div>'; });
@@ -25,8 +25,8 @@ function showLoginModal() {
             <div style="padding: 1.5rem 0; text-align: center;">
                 <i class="fas fa-sign-in-alt" style="font-size: 2.5rem; color: #4f8cff;"></i>
                 <p style="margin: 1rem 0;">Vui lòng đăng nhập để sử dụng chức năng giỏ hàng.</p>
-                <a href="page/login.php" class="btn" style="width: 100%;">Đăng nhập</a>
-                <a href="page/register.php" class="btn" style="width: 100%; background: #51cf66; color: #fff; margin-top: 0.7rem;">Đăng ký</a>
+                <a href="login.php" class="btn" style="width: 100%;">Đăng nhập</a>
+                <a href="register.php" class="btn" style="width: 100%; background: #51cf66; color: #fff; margin-top: 0.7rem;">Đăng ký</a>
             </div>
         </div>
     `;

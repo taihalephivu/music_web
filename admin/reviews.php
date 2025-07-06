@@ -8,7 +8,7 @@ require_once '../config/database.php';
 $db = new Database();
 $conn = $db->getConnection();
 
-// Lấy danh sách đánh giá dịch vụ
+// Lấy danh sách đánh giá
 $stmt = $conn->query('SELECT sr.*, u.username FROM service_reviews sr LEFT JOIN users u ON sr.user_id = u.id ORDER BY sr.created_at DESC');
 $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -35,7 +35,7 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </style>
 </head>
 <body>
-    <h1>Quản lý đánh giá dịch vụ</h1>
+    <h1 style="color: #2196f3;">Quản lý đánh giá dịch vụ</h1>
     
     <?php if (isset($_GET['msg'])): ?>
         <?php if ($_GET['msg'] === 'deleted'): ?>
