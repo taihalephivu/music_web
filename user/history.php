@@ -274,6 +274,52 @@ function statusColor($status) {
             align-items: center;
             gap: 8px;
         }
+        .order-products-list {
+            margin: 10px 0 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .order-product-card {
+            display: flex;
+            align-items: center;
+            background: #f8fafd;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #2196f322;
+            padding: 12px 18px;
+            gap: 18px;
+        }
+        .order-product-img {
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+        }
+        .order-product-info {
+            flex: 1;
+        }
+        .order-product-name {
+            color: #2196f3;
+            font-weight: 600;
+            font-size: 1.08rem;
+            text-decoration: none;
+        }
+        .order-product-name:hover {
+            text-decoration: underline;
+        }
+        .order-product-meta {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 2px 0 0 0;
+        }
+        .order-product-total {
+            color: #ff4757;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 2px;
+        }
         @media (max-width: 900px) {
             .history-content-grid {
                 grid-template-columns: 1fr;
@@ -353,22 +399,12 @@ function statusColor($status) {
                             $totalAmount += $order['total_amount'];
                             
                             // Lấy thông tin sản phẩm đầu tiên để hiển thị ảnh và id
-                            $stmt2 = $conn->prepare('SELECT i.name, i.image_url, i.id as instrument_id FROM order_items oi 
-                                                   LEFT JOIN instruments i ON oi.instrument_id = i.id 
-                                                   WHERE oi.order_id = ? LIMIT 1');
+                            $stmt2 = $conn->prepare('SELECT oi.*, i.name, i.id as instrument_id, i.image_url FROM order_items oi LEFT JOIN instruments i ON oi.instrument_id = i.id WHERE oi.order_id = ?');
                             $stmt2->execute([$order['id']]);
-                            $firstItem = $stmt2->fetch(PDO::FETCH_ASSOC);
-                            
-                            // Đếm số lượng sản phẩm trong đơn hàng
-                            $stmt3 = $conn->prepare('SELECT COUNT(*) as count FROM order_items WHERE order_id = ?');
-                            $stmt3->execute([$order['id']]);
-                            $itemCount = $stmt3->fetch(PDO::FETCH_ASSOC)['count'];
+                            $items = $stmt2->fetchAll(PDO::FETCH_ASSOC);
                         ?>
-                        <div class="history-item-row" data-status="<?php echo $order['status']; ?>" onclick="window.location.href='../product_detail.php?id=<?php echo $firstItem['instrument_id']; ?>'">
-                            <img src="<?php echo $firstItem['image_url'] ?: '../assets/images/default.jpg'; ?>" 
-                                 alt="<?php echo htmlspecialchars($firstItem['name']); ?>" 
-                                 class="order-image"
-                                 onerror="this.src='../assets/images/default.jpg'">
+                        <div class="history-item-row" data-status="<?php echo $order['status']; ?>" onclick="window.location.href='../product_detail.php?id=<?php echo $items[0]['instrument_id']; ?>'">
+                            <img src="../assets/images/default.jpg" alt="Đơn hàng" class="order-image">
                             <div class="order-info">
                                 <div class="order-id">Đơn hàng #<?php echo $order['id']; ?></div>
                                 <div class="order-date">
@@ -377,7 +413,7 @@ function statusColor($status) {
                                 </div>
                                 <div class="order-items-count">
                                     <i class="fas fa-box"></i> 
-                                    <?php echo $itemCount; ?> sản phẩm
+                                    <?php echo count($items); ?> sản phẩm
                                 </div>
                             </div>
                             <span class="order-status" style="background: <?php echo statusColor($order['status']); ?>">
@@ -386,9 +422,28 @@ function statusColor($status) {
                             <div class="order-total">
                                 <?php echo number_format($order['total_amount'], 0, ',', '.'); ?>₫
                             </div>
-                            <button class="order-details" onclick="event.stopPropagation(); window.open('../product_detail.php?id=<?php echo $firstItem['instrument_id']; ?>','_blank');">
+                            <button class="order-details" onclick="event.stopPropagation(); window.open('../product_detail.php?id=<?php echo $items[0]['instrument_id']; ?>','_blank');">
                                 <i class="fas fa-eye"></i>
                             </button>
+                        </div>
+                        <div class="order-products-list">
+                        <?php foreach ($items as $item): ?>
+                            <div class="order-product-card">
+                                <img src="<?php echo $item['image_url'] ? '../' . htmlspecialchars($item['image_url']) : '../assets/images/default.jpg'; ?>"
+                                     alt="<?php echo htmlspecialchars($item['name']); ?>"
+                                     class="order-product-img"
+                                     onerror="this.src='../assets/images/default.jpg'">
+                                <div class="order-product-info">
+                                    <a href="../product_detail.php?id=<?php echo $item['instrument_id']; ?>" class="order-product-name" target="_blank"><?php echo htmlspecialchars($item['name']); ?></a>
+                                    <div class="order-product-meta">
+                                        Số lượng: <?php echo $item['quantity']; ?> | Giá: <?php echo number_format($item['price'], 0, ',', '.'); ?>₫
+                                    </div>
+                                    <div class="order-product-total">
+                                        Thành tiền: <?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?>₫
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                         </div>
                         <?php endforeach; ?>
                     </div>

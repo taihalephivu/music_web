@@ -28,7 +28,7 @@
             </div>
 
             <!-- Đánh giá dịch vụ và Bản đồ -->
-            <div class="footer-section reviews-map-section">
+            <div class="footer-section reviews-map-section" id="reviews">
                 <?php include 'service_reviews.php'; ?>
                 
                 <!-- Bản đồ chỉ dẫn -->

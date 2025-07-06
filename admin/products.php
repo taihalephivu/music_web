@@ -97,6 +97,7 @@ function confirmDeleteProduct(id) {
 </script>
 <table>
     <tr>
+        <th>ID</th>
         <th>Tên sản phẩm</th>
         <th>Giá</th>
         <th>Tồn kho</th>
@@ -106,6 +107,7 @@ function confirmDeleteProduct(id) {
     </tr>
     <?php foreach($products as $product): ?>
     <tr>
+        <td><?php echo $product['id']; ?></td>
         <td><?php echo htmlspecialchars($product['name']); ?></td>
         <td><?php echo number_format($product['price'], 0, ',', '.'); ?>₫</td>
         <td><?php echo $product['stock_quantity']; ?></td>

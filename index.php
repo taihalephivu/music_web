@@ -87,8 +87,8 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Instruments Section -->
     <section id="instruments" class="container">
         <div class="section-header">
-            <h2><i class="fas fa-guitar"></i> Tất cả dụng cụ âm nhạc</h2>
-            <p>Khám phá bộ sưu tập dụng cụ âm nhạc chất lượng cao</p>
+            <h2><i class="fas fa-guitar"></i> Danh Mục Sản Phẩm</h2>
+            <p>Khám phá bộ sưu tập nhạc cụ chất lượng cao</p>
         </div>
         <div id="musicGrid" class="instruments-grid">
             <?php if (count($products) == 0): ?>
@@ -162,39 +162,51 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <h2><i class="fas fa-th-large"></i> Danh mục dụng cụ</h2>
                 <p>Chọn danh mục dụng cụ âm nhạc phù hợp với bạn</p>
             </div>
-            <div class="categories-grid">
-                <div class="category-card" onclick="filterByCategory('Guitar')">
-                    <i class="fas fa-guitar category-icon"></i>
-                    <h3 class="category-name">Guitar</h3>
-                    <p class="category-count">Acoustic & Electric</p>
-                </div>
-                <div class="category-card" onclick="filterByCategory('Piano')">
-                    <i class="fas fa-piano category-icon"></i>
-                    <h3 class="category-name">Piano</h3>
-                    <p class="category-count">Digital & Acoustic</p>
-                </div>
-                <div class="category-card" onclick="filterByCategory('Drum')">
-                    <i class="fas fa-drum category-icon"></i>
-                    <h3 class="category-name">Drum</h3>
-                    <p class="category-count">Bộ trống & Phụ kiện</p>
-                </div>
-                <div class="category-card" onclick="filterByCategory('Violin')">
-                    <i class="fas fa-violin category-icon"></i>
-                    <h3 class="category-name">Violin</h3>
-                    <p class="category-count">Đàn dây</p>
-                </div>
-                <div class="category-card" onclick="filterByCategory('Wind Instruments')">
-                    <i class="fas fa-wind category-icon"></i>
-                    <h3 class="category-name">Nhạc cụ hơi</h3>
-                    <p class="category-count">Kèn & Sáo</p>
-                </div>
-                <div class="category-card" onclick="filterByCategory('Accessories')">
-                    <i class="fas fa-tools category-icon"></i>
-                    <h3 class="category-name">Phụ kiện</h3>
-                    <p class="category-count">Dây đàn & Phụ kiện</p>
-                </div>
-                </div>
-            </div>
+            <!-- Danh mục dụng cụ -->
+<div class="category-list" style="display:flex;justify-content:center;gap:60px;flex-wrap:wrap;margin:60px 0 40px 0;">
+  <a href="category.php?cat=Guitar" style="text-decoration:none;">
+  <div class="category-item" style="text-align:center;min-width:160px;flex:1;">
+    <i class="fas fa-guitar" style="font-size:2.5rem;color:#667eea;margin-bottom:10px;"></i>
+    <div class="cat-title" style="font-weight:bold;font-size:1.2rem;margin-bottom:4px;">Guitar</div>
+    <div class="cat-desc" style="color:#666;font-size:1rem;">Acoustic & Electric</div>
+  </div>
+</a>
+<a href="category.php?cat=Piano" style="text-decoration:none;">
+  <div class="category-item" style="text-align:center;min-width:160px;flex:1;">
+    <i class="fas fa-music" style="font-size:2.5rem;color:#667eea;margin-bottom:10px;"></i>
+    <div class="cat-title" style="font-weight:bold;font-size:1.2rem;margin-bottom:4px;">Piano</div>
+    <div class="cat-desc" style="color:#666;font-size:1rem;">Digital & Acoustic</div>
+  </div>
+</a>
+<a href="category.php?cat=Drum" style="text-decoration:none;">
+  <div class="category-item" style="text-align:center;min-width:160px;flex:1;">
+    <i class="fas fa-drum" style="font-size:2.5rem;color:#667eea;margin-bottom:10px;"></i>
+    <div class="cat-title" style="font-weight:bold;font-size:1.2rem;margin-bottom:4px;">Drum</div>
+    <div class="cat-desc" style="color:#666;font-size:1rem;">Bộ trống & Phụ kiện</div>
+  </div>
+</a>
+<a href="category.php?cat=Violin" style="text-decoration:none;">
+  <div class="category-item" style="text-align:center;min-width:160px;flex:1;">
+    <i class="fas fa-music" style="font-size:2.5rem;color:#667eea;margin-bottom:10px;"></i>
+    <div class="cat-title" style="font-weight:bold;font-size:1.2rem;margin-bottom:4px;">Violin</div>
+    <div class="cat-desc" style="color:#666;font-size:1rem;">Đàn dây</div>
+  </div>
+</a>
+<a href="category.php?cat=Wind Instruments" style="text-decoration:none;">
+  <div class="category-item" style="text-align:center;min-width:160px;flex:1;">
+    <i class="fas fa-wind" style="font-size:2.5rem;color:#667eea;margin-bottom:10px;"></i>
+    <div class="cat-title" style="font-weight:bold;font-size:1.2rem;margin-bottom:4px;">Nhạc cụ hơi</div>
+    <div class="cat-desc" style="color:#666;font-size:1rem;">Kèn & Sáo</div>
+  </div>
+</a>
+<a href="category.php?cat=Accessories" style="text-decoration:none;">
+  <div class="category-item" style="text-align:center;min-width:160px;flex:1;">
+    <i class="fas fa-tools" style="font-size:2.5rem;color:#667eea;margin-bottom:10px;"></i>
+    <div class="cat-title" style="font-weight:bold;font-size:1.2rem;margin-bottom:4px;">Phụ kiện</div>
+    <div class="cat-desc" style="color:#666;font-size:1rem;">Dây đàn & Phụ kiện</div>
+  </div>
+</a>
+</div>
         </section>
 
     <!-- Brands Section -->
@@ -205,31 +217,42 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <p>Những thương hiệu dụng cụ âm nhạc hàng đầu thế giới</p>
             </div>
             <div class="brands-grid">
-                <div class="brand-card">
-                    <img src="assets/images/brands/fender.png" alt="Fender" class="brand-logo">
-                    <h3 class="brand-name">Fender</h3>
+                <a href="brand.php?brand=Fender" style="text-decoration:none;">
+                    <div class="brand-card">
+                        <img src="assets/images/brands/fender.png" alt="Fender" class="brand-logo">
+                        <h3 class="brand-name">Fender</h3>
                     </div>
-                <div class="brand-card">
-                    <img src="assets/images/brands/yamaha.jpg" alt="Yamaha" class="brand-logo">
-                    <h3 class="brand-name">Yamaha</h3>
-                </div>
-                <div class="brand-card">
-                    <img src="assets/images/brands/roland.png" alt="Roland" class="brand-logo">
-                    <h3 class="brand-name">Roland</h3>
+                </a>
+                <a href="brand.php?brand=Yamaha" style="text-decoration:none;">
+                    <div class="brand-card">
+                        <img src="assets/images/brands/yamaha.jpg" alt="Yamaha" class="brand-logo">
+                        <h3 class="brand-name">Yamaha</h3>
                     </div>
-                <div class="brand-card">
-                    <img src="assets/images/brands/gibson.png" alt="Gibson" class="brand-logo">
-                    <h3 class="brand-name">Gibson</h3>
-                </div>
-                <div class="brand-card">
-                    <img src="assets/images/brands/pearl.jpg" alt="Pearl" class="brand-logo">
-                    <h3 class="brand-name">Pearl</h3>
-                </div>
-                <div class="brand-card">
-                    <img src="assets/images/brands/kawai.png" alt="Kawai" class="brand-logo">
-                    <h3 class="brand-name">Kawai</h3>
+                </a>
+                <a href="brand.php?brand=Roland" style="text-decoration:none;">
+                    <div class="brand-card">
+                        <img src="assets/images/brands/roland.png" alt="Roland" class="brand-logo">
+                        <h3 class="brand-name">Roland</h3>
                     </div>
-                </div>
+                </a>
+                <a href="brand.php?brand=Gibson" style="text-decoration:none;">
+                    <div class="brand-card">
+                        <img src="assets/images/brands/gibson.png" alt="Gibson" class="brand-logo">
+                        <h3 class="brand-name">Gibson</h3>
+                    </div>
+                </a>
+                <a href="brand.php?brand=Pearl" style="text-decoration:none;">
+                    <div class="brand-card">
+                        <img src="assets/images/brands/pearl.jpg" alt="Pearl" class="brand-logo">
+                        <h3 class="brand-name">Pearl</h3>
+                    </div>
+                </a>
+                <a href="brand.php?brand=Kawai" style="text-decoration:none;">
+                    <div class="brand-card">
+                        <img src="assets/images/brands/kawai.png" alt="Kawai" class="brand-logo">
+                        <h3 class="brand-name">Kawai</h3>
+                    </div>
+                </a>
             </div>
         </section>
 

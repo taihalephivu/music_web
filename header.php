@@ -51,7 +51,7 @@ if (isset($_SESSION['user']['id'])) {
                 </ul>
             </li>
             <li><a href="summer_sale.php" style="font-weight:600;font-size:1.05rem;color:#222;text-decoration:none;padding:10px 18px;border-radius:8px;transition:background 0.2s;">Summer Sale</a></li>
-            <li><a href="#blog" style="font-weight:600;font-size:1.05rem;color:#222;text-decoration:none;padding:10px 18px;border-radius:8px;transition:background 0.2s;">Bài viết</a></li>
+            <li><a href="#reviews" style="font-weight:600;font-size:1.05rem;color:#222;text-decoration:none;padding:10px 18px;border-radius:8px;transition:background 0.2s;">Đánh giá</a></li>
         </ul>
         <!-- Icon bên phải -->
         <div class="nav-right" style="display:flex;align-items:center;gap:18px;">
