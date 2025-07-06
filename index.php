@@ -78,9 +78,12 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Search Section -->
         <section class="search-section">
             <div class="container">
-            <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm dụng cụ âm nhạc, thương hiệu..." oninput="filterHomeProducts()">
-        </div>
-    </section>
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm dụng cụ âm nhạc, thương hiệu..." oninput="filterHomeProducts()">
+                </div>
+            </div>
+        </section>
     <!-- Instruments Section -->
     <section id="instruments" class="container">
         <div class="section-header">

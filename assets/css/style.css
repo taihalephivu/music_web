@@ -265,10 +265,25 @@ body {
     background: rgba(255, 255, 255, 0.1);
 }
 
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-container .search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 1.2rem;
+    z-index: 2;
+}
+
 .search-input {
     width: 100%;
-    max-width: 600px;
-    padding: 15px 25px;
+    padding: 15px 25px 15px 50px;
     border: none;
     border-radius: 50px;
     font-size: 1.1rem;

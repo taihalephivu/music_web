@@ -55,8 +55,22 @@ if (isset($_SESSION['user']['id'])) {
         </ul>
         <!-- Icon bên phải -->
         <div class="nav-right" style="display:flex;align-items:center;gap:18px;">
-            <!-- Search icon -->
-            <i class="fas fa-search search-icon" onclick="document.getElementById('searchInput') && document.getElementById('searchInput').focus();" style="font-size:1.4rem;color:#111;cursor:pointer;padding:8px;border-radius:50%;transition:background 0.2s;"></i>
+            <!-- Notification icon -->
+            <div class="notification-dropdown" style="position:relative;">
+                <i class="fas fa-bell notification-icon" tabindex="0" style="font-size:1.4rem;color:#111;cursor:pointer;padding:8px;border-radius:50%;transition:background 0.2s;"></i>
+                <span class="notification-count" id="notificationCount" style="position:absolute;top:-2px;right:-2px;background:#ff4757;color:#fff;font-size:0.7rem;font-weight:700;padding:1px 4px;border-radius:8px;min-width:14px;text-align:center;box-shadow:0 2px 4px #ff475799;display:none;">0</span>
+                <div class="notification-dropdown-content" style="display:none;position:absolute;right:0;top:120%;background:#fff;min-width:280px;border-radius:16px;box-shadow:0 8px 32px rgba(33,150,243,0.13);padding:18px 0;z-index:200;">
+                    <div class="notification-header" style="font-weight:600;color:#2196f3;text-align:center;margin-bottom:15px;padding:0 20px;">Thông báo</div>
+                    <div class="notification-list" id="notificationList" style="max-height:300px;overflow-y:auto;">
+                        <div class="notification-loading" style="text-align:center;padding:20px;color:#666;">
+                            <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                        </div>
+                    </div>
+                    <div class="notification-footer" style="text-align:center;padding:10px 20px;border-top:1px solid #f1f1f1;">
+                        <button onclick="markAllAsRead()" style="background:none;border:none;color:#2196f3;font-size:0.9rem;font-weight:500;cursor:pointer;padding:5px 10px;border-radius:4px;transition:background 0.2s;">Đánh dấu xem tất cả</button>
+                    </div>
+                </div>
+            </div>
             <!-- User icon -->
             <div class="user-dropdown" style="position:relative;">
                 <i class="fas fa-user user-icon" tabindex="0" style="font-size:1.6rem;color:#111;cursor:pointer;border-radius:50%;padding:8px;transition:background 0.2s;"></i>
@@ -151,9 +165,251 @@ if(document.getElementById('backToTopBtn')) {
 .user-dropdown:hover .user-dropdown-content, .user-dropdown:focus-within .user-dropdown-content { display: block !important; box-shadow: 0 8px 32px rgba(33,150,243,0.18); }
 .user-icon:hover { background: #e3f2fd; }
 .cart-icon:hover { background: #e3f2fd; border-radius: 50%; }
+.notification-dropdown:hover .notification-dropdown-content, .notification-dropdown:focus-within .notification-dropdown-content { display: block !important; box-shadow: 0 8px 32px rgba(33,150,243,0.18); }
+.notification-icon:hover { background: #e3f2fd; }
+.notification-item:hover { background: #e3f2fd; }
 @media (max-width: 900px) {
     .nav-container { flex-direction: column; height: auto; padding: 0 8px; }
     .nav-menu { flex-direction: column; gap: 0; }
     .nav-right { margin-top: 10px; }
 }
-</style> 
+
+/* Notification styles */
+.notification-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.notification-item:hover {
+    background: #e3f2fd;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: #222;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.notification-empty {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.notification-product {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-product img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+}
+
+.notification-status {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-processing {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-shipped {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-delivered {
+    background: #c3e6cb;
+    color: #155724;
+}
+
+.status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-default {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.notification-footer button:hover {
+    background: #e3f2fd;
+}
+</style>
+
+<script>
+// JavaScript cho thông báo
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (isset($_SESSION['user']['id'])): ?>
+    // Load thông báo khi trang tải xong
+    loadNotifications();
+    loadNotificationCount();
+    
+    // Cập nhật thông báo mỗi 30 giây
+    setInterval(function() {
+        loadNotificationCount();
+    }, 30000);
+    
+    // Load thông báo khi hover vào icon
+    const notificationIcon = document.querySelector('.notification-icon');
+    const notificationDropdown = document.querySelector('.notification-dropdown-content');
+    
+    if (notificationIcon && notificationDropdown) {
+        notificationIcon.addEventListener('mouseenter', function() {
+            loadNotifications();
+        });
+    }
+    <?php endif; ?>
+});
+
+function loadNotificationCount() {
+    fetch('notifications.php?action=get_count')
+        .then(res => res.json())
+        .then(data => {
+            const countElement = document.getElementById('notificationCount');
+            if (countElement) {
+                if (data.count > 0) {
+                    countElement.textContent = data.count;
+                    countElement.style.display = 'block';
+                } else {
+                    countElement.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => console.error('Error loading notification count:', error));
+}
+
+function loadNotifications() {
+    const notificationList = document.getElementById('notificationList');
+    if (!notificationList) return;
+    
+    fetch('notifications.php?action=get_notifications')
+        .then(res => res.json())
+        .then(data => {
+            if (data.length === 0) {
+                notificationList.innerHTML = '<div class="notification-empty">Không có thông báo mới</div>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach(notification => {
+                const statusClass = getStatusClass(notification.status);
+                html += `
+                    <div class="notification-item" onclick="viewOrder(${notification.order_id})">
+                        <div class="notification-header">
+                            <div class="notification-title">${notification.title}</div>
+                            <span class="notification-status ${statusClass}">${getStatusText(notification.status)}</span>
+                        </div>
+                        <div class="notification-message">${notification.message}</div>
+                        <div class="notification-time">${notification.time}</div>
+                    </div>
+                `;
+            });
+            notificationList.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading notifications:', error);
+            notificationList.innerHTML = '<div class="notification-empty">Lỗi tải thông báo</div>';
+        });
+}
+
+function getStatusClass(status) {
+    switch (status) {
+        case 'pending': return 'status-pending';
+        case 'processing': return 'status-processing';
+        case 'shipped': return 'status-shipped';
+        case 'delivered': return 'status-delivered';
+        case 'cancelled': return 'status-cancelled';
+        default: return 'status-default';
+    }
+}
+
+function getStatusText(status) {
+    switch (status) {
+        case 'pending': return 'Chờ xác nhận';
+        case 'processing': return 'Đang xử lý';
+        case 'shipped': return 'Đang giao hàng';
+        case 'delivered': return 'Đã giao hàng';
+        case 'cancelled': return 'Đã hủy';
+        default: return 'Không xác định';
+    }
+}
+
+function viewOrder(orderId) {
+    window.location.href = 'user/history.php?order_id=' + orderId;
+}
+
+
+
+function markAllAsRead() {
+    fetch('notifications.php?action=mark_read')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Ẩn badge số lượng thông báo
+                const countElement = document.getElementById('notificationCount');
+                if (countElement) {
+                    countElement.style.display = 'none';
+                }
+                
+                // Hiển thị thông báo đã đánh dấu xem tất cả
+                const notificationList = document.getElementById('notificationList');
+                if (notificationList) {
+                    notificationList.innerHTML = '<div class="notification-empty">Đã đánh dấu xem tất cả thông báo</div>';
+                }
+                
+                // Tự động ẩn dropdown sau 2 giây
+                setTimeout(() => {
+                    const dropdown = document.querySelector('.notification-dropdown-content');
+                    if (dropdown) {
+                        dropdown.style.display = 'none';
+                    }
+                }, 2000);
+            }
+        })
+        .catch(error => {
+            console.error('Error marking notifications as read:', error);
+            alert('Có lỗi xảy ra khi đánh dấu thông báo');
+        });
+}
+</script> 
