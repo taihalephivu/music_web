@@ -51,7 +51,7 @@ function statusColor($status) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
+        body { 
             background: #f6f8fa;
         }
         .history-main {
@@ -351,30 +351,30 @@ function statusColor($status) {
     <main class="history-main">
         <div class="history-wrapper">
             <a href="../index.php" style="color: #2196f3; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; font-size: 1.08rem;">
-                <i class="fas fa-arrow-left"></i> Quay lại trang chủ
-            </a>
+            <i class="fas fa-arrow-left"></i> Quay lại trang chủ
+        </a>
             <div class="history-title-block">
                 <i class="fas fa-history" style="font-size:2.1rem;color:#2196f3;"></i>
                 <h1>Lịch sử mua hàng</h1>
-            </div>
-            
-            <?php if (isset($_GET['success'])): ?>
-                <div class="success-msg">
+        </div>
+        
+        <?php if (isset($_GET['success'])): ?>
+            <div class="success-msg">
                     <i class="fas fa-check-circle"></i>
                     Thanh toán thành công! Đơn hàng của bạn đã được ghi nhận.
-                </div>
-            <?php endif; ?>
-            
-            <?php if (empty($orders)): ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (empty($orders)): ?>
                 <div class="empty-history">
-                    <i class="fas fa-shopping-bag"></i>
+                <i class="fas fa-shopping-bag"></i>
                     <h2>Chưa có đơn hàng</h2>
                     <p>Bạn chưa có đơn hàng nào. Hãy mua sắm để xem lịch sử đơn hàng tại đây!</p>
                     <a href="../index.php" class="btn" style="background: #2196f3; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                         <i class="fas fa-arrow-left"></i> Tiếp tục mua sắm
                     </a>
-                </div>
-            <?php else: ?>
+            </div>
+        <?php else: ?>
             <div class="history-content-grid">
                 <div class="history-orders">
                     <div class="history-controls">
@@ -406,19 +406,19 @@ function statusColor($status) {
                         <div class="history-item-row" data-status="<?php echo $order['status']; ?>" onclick="window.location.href='../product_detail.php?id=<?php echo $items[0]['instrument_id']; ?>'">
                             <img src="../assets/images/default.jpg" alt="Đơn hàng" class="order-image">
                             <div class="order-info">
-                                <div class="order-id">Đơn hàng #<?php echo $order['id']; ?></div>
-                                <div class="order-date">
-                                    <i class="fas fa-calendar"></i> 
-                                    <?php echo date('d/m/Y H:i', strtotime($order['created_at'])); ?>
-                                </div>
+                            <div class="order-id">Đơn hàng #<?php echo $order['id']; ?></div>
+                            <div class="order-date">
+                                <i class="fas fa-calendar"></i> 
+                                <?php echo date('d/m/Y H:i', strtotime($order['created_at'])); ?>
+                            </div>
                                 <div class="order-items-count">
                                     <i class="fas fa-box"></i> 
                                     <?php echo count($items); ?> sản phẩm
                                 </div>
-                            </div>
-                            <span class="order-status" style="background: <?php echo statusColor($order['status']); ?>">
-                                <?php echo statusLabel($order['status']); ?>
-                            </span>
+                        </div>
+                        <span class="order-status" style="background: <?php echo statusColor($order['status']); ?>">
+                            <?php echo statusLabel($order['status']); ?>
+                        </span>
                             <div class="order-total">
                                 <?php echo number_format($order['total_amount'], 0, ',', '.'); ?>₫
                             </div>
@@ -437,7 +437,7 @@ function statusColor($status) {
                                     <a href="../product_detail.php?id=<?php echo $item['instrument_id']; ?>" class="order-product-name" target="_blank"><?php echo htmlspecialchars($item['name']); ?></a>
                                     <div class="order-product-meta">
                                         Số lượng: <?php echo $item['quantity']; ?> | Giá: <?php echo number_format($item['price'], 0, ',', '.'); ?>₫
-                                    </div>
+                    </div>
                                     <div class="order-product-total">
                                         Thành tiền: <?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?>₫
                                     </div>
@@ -471,8 +471,8 @@ function statusColor($status) {
                     </a>
                 </div>
             </div>
-            <?php endif; ?>
-        </div>
+        <?php endif; ?>
+    </div>
     </main>
     
     <script>

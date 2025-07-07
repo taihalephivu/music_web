@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label style="display:flex;align-items:center;gap:6px;margin:8px 0 16px 0;">
                 <input type="checkbox" name="remember_me" value="1" <?php if(isset($_COOKIE['remember_user'])) echo 'checked'; ?>> Ghi nhớ tài khoản
             </label>
-
+            
             <button type="submit" class="login-btn">
                 <i class="fas fa-sign-in-alt"></i> Đăng nhập
             </button>

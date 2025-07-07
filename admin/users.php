@@ -11,12 +11,12 @@ require_once '../config/database.php';
 $db = new Database();
 $conn = $db->getConnection();
 
-// Xử lý xóa user
+//xóa user
 $delete_msg = '';
 if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['user_id'])) {
     $id = intval($_POST['user_id']);
     if ($id > 0) {
-        // Kiểm tra user có tồn tại không
+        // Kiểm tra user tồn tại không
         $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
         $stmt->execute([$id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -27,14 +27,14 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['us
             } elseif ($id == $_SESSION['admin']['id']) {
                 $delete_msg = 'Không thể xóa tài khoản đang đăng nhập!';
             } else {
-                // Xóa các đơn hàng của user trước
+                // Xóa các đơn hàng của user 
                 $stmt = $conn->prepare("DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)");
                 $stmt->execute([$id]);
                 
                 $stmt = $conn->prepare("DELETE FROM orders WHERE user_id = ?");
                 $stmt->execute([$id]);
                 
-                // Xóa đánh giá dịch vụ
+                // Xóa đánh giá
                 $stmt = $conn->prepare("DELETE FROM service_reviews WHERE user_id = ?");
                 $stmt->execute([$id]);
                 
@@ -58,7 +58,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['us
     }
 }
 
-// Xử lý cập nhật user
+//cập nhật user
 $update_msg = '';
 if (isset($_POST['action']) && $_POST['action'] === 'update' && isset($_POST['user_id'])) {
     $id = intval($_POST['user_id']);
@@ -77,7 +77,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'update' && isset($_POST['us
     }
 }
 
-// Xử lý tìm kiếm
+// tìm kiếm
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $where = '';
 $params = [];
@@ -126,9 +126,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     <?php endif; ?>
     
-    <form class="search-form" method="get">
-        <input type="text" name="search" placeholder="Tìm kiếm username, email, SĐT..." value="<?php echo htmlspecialchars($search); ?>">
-        <button type="submit">Tìm kiếm</button>
+    <form class="search-form" method="get" action="index.php" style="margin-bottom:18px;display:flex;gap:8px;max-width:400px;">
+        <input type="hidden" name="page" value="users">
+        <input type="text" name="search" placeholder="Tìm kiếm username, email, SĐT..." value="<?php echo htmlspecialchars($search); ?>" style="flex:1;padding:8px 10px;border-radius:6px;border:1px solid #ccc;">
+        <button type="submit" style="padding:8px 18px;border-radius:6px;background:#2196f3;color:#fff;border:none;">Tìm kiếm</button>
     </form>
     
     <table>

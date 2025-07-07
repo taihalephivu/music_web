@@ -9,18 +9,33 @@ if (!isset($_SESSION['admin'])) {
 require_once '../config/database.php';
 $db = new Database();
 $conn = $db->getConnection();
+
+// Xử lý tìm kiếm
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$where = '';
+$params = [];
+if ($search !== '') {
+    $where = "WHERE i.name LIKE :kw OR b.name LIKE :kw OR c.name LIKE :kw";
+    $params[':kw'] = "%$search%";
+}
 // Lấy danh sách sản phẩm
 $sql = "SELECT i.*, b.name as brand_name, c.name as category_name FROM instruments i
         LEFT JOIN brands b ON i.brand_id = b.id
         LEFT JOIN categories c ON i.category_id = c.id
+        $where
         ORDER BY i.id DESC";
 $stmt = $conn->prepare($sql);
-$stmt->execute();
+$stmt->execute($params);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <h2>Quản lý sản phẩm</h2>
+<form method="get" action="index.php" style="margin-bottom:18px;display:flex;gap:8px;max-width:400px;">
+    <input type="hidden" name="page" value="products">
+    <input type="text" name="search" placeholder="Tìm tên, thương hiệu, danh mục..." value="<?php echo htmlspecialchars($search); ?>" style="flex:1;padding:8px 10px;border-radius:6px;border:1px solid #ccc;">
+    <button type="submit" style="padding:8px 18px;border-radius:6px;background:#2196f3;color:#fff;border:none;">Tìm kiếm</button>
+</form>
 <a href="#" class="btn btn-primary" style="margin-bottom:18px;" onclick="showAddProductModal();return false;">+ Thêm sản phẩm</a>
-<!-- Modal thêm/sửa sản phẩm -->
+<!-- quản lý sp -->
 <div id="productModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:#fff;padding:32px 28px;border-radius:16px;max-width:480px;width:95vw;box-shadow:0 8px 32px #2196f355;position:relative;">
     <h3 id="modalTitle" style="color:#2196f3;margin-bottom:18px;">Thêm sản phẩm mới</h3>
@@ -105,6 +120,9 @@ function confirmDeleteProduct(id) {
         <th>Thương hiệu</th>
         <th>Hành động</th>
     </tr>
+    <?php if (empty($products)): ?>
+    <tr><td colspan="7" style="text-align:center;color:#888;font-style:italic;">Không tìm thấy sản phẩm phù hợp.</td></tr>
+    <?php else: ?>
     <?php foreach($products as $product): ?>
     <tr>
         <td><?php echo $product['id']; ?></td>
@@ -128,6 +146,7 @@ function confirmDeleteProduct(id) {
         </td>
     </tr>
     <?php endforeach; ?>
+    <?php endif; ?>
 </table>
 <form id="deleteProductForm" method="post" style="display:none;"><input type="hidden" name="delete_id" id="delete_id"></form>
 <br>

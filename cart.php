@@ -427,6 +427,14 @@ $_SESSION['cart_count_read'] = array_sum(array_column($cartItems, 'quantity'));
                         <span>Tổng cộng:</span>
                         <span><?php echo number_format($total, 0, ',', '.'); ?>₫</span>
                     </div>
+                    <div style="margin-bottom:18px;">
+                        <div style="font-weight:600;margin-bottom:8px;">Chọn hình thức thanh toán:</div>
+                        <select id="paymentMethodSelect" name="payment_method" style="width:100%;padding:10px 8px;border-radius:8px;border:1px solid #ccc;font-size:1rem;">
+                            <option value="momo">Ví MoMo</option>
+                            <option value="bank">Chuyển khoản ngân hàng</option>
+                            <option value="cod">Thanh toán khi nhận hàng</option>
+                        </select>
+                    </div>
                     <button class="checkout-btn" onclick="checkout()">
                         <i class="fas fa-credit-card"></i> Thanh toán
                     </button>
@@ -541,6 +549,12 @@ $_SESSION['cart_count_read'] = array_sum(array_column($cartItems, 'quantity'));
                 alert('Giỏ hàng trống!');
                 return;
             }
+            // Lấy hình thức thanh toán
+            const paymentMethod = document.getElementById('paymentMethodSelect');
+            if (!paymentMethod || !paymentMethod.value) {
+                alert('Vui lòng chọn hình thức thanh toán!');
+                return;
+            }
             // Gửi qua form ẩn
             const form = document.createElement('form');
             form.method = 'POST';
@@ -551,6 +565,12 @@ $_SESSION['cart_count_read'] = array_sum(array_column($cartItems, 'quantity'));
             input.name = 'cart_json';
             input.value = JSON.stringify(cart);
             form.appendChild(input);
+            // Thêm input cho payment_method
+            const paymentInput = document.createElement('input');
+            paymentInput.type = 'hidden';
+            paymentInput.name = 'payment_method';
+            paymentInput.value = paymentMethod.value;
+            form.appendChild(paymentInput);
             document.body.appendChild(form);
             form.submit();
         }

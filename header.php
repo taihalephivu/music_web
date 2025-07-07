@@ -268,7 +268,7 @@ if(document.getElementById('backToTopBtn')) {
 .notification-footer button:hover {
     background: #e3f2fd;
 }
-</style>
+</style> 
 
 <script>
 // JavaScript cho thông báo

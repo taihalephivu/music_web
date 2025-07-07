@@ -8,8 +8,17 @@ require_once '../config/database.php';
 $db = new Database();
 $conn = $db->getConnection();
 
+// Xử lý tìm kiếm
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$where = '';
+$params = [];
+if ($search !== '') {
+    $where = "WHERE (u.username LIKE :kw OR sr.comment LIKE :kw)";
+    $params[':kw'] = "%$search%";
+}
 // Lấy danh sách đánh giá
-$stmt = $conn->query('SELECT sr.*, u.username FROM service_reviews sr LEFT JOIN users u ON sr.user_id = u.id ORDER BY sr.created_at DESC');
+$stmt = $conn->prepare('SELECT sr.*, u.username FROM service_reviews sr LEFT JOIN users u ON sr.user_id = u.id ' . ($where ? $where . ' ' : '') . 'ORDER BY sr.created_at DESC');
+$stmt->execute($params);
 $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -36,6 +45,11 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <h1 style="color: #2196f3;">Quản lý đánh giá dịch vụ</h1>
+    <form method="get" action="index.php" style="margin-bottom:18px;display:flex;gap:8px;max-width:400px;">
+        <input type="hidden" name="page" value="reviews">
+        <input type="text" name="search" placeholder="Tìm username, bình luận..." value="<?php echo htmlspecialchars($search); ?>" style="flex:1;padding:8px 10px;border-radius:6px;border:1px solid #ccc;">
+        <button type="submit" style="padding:8px 18px;border-radius:6px;background:#2196f3;color:#fff;border:none;">Tìm kiếm</button>
+    </form>
     
     <?php if (isset($_GET['msg'])): ?>
         <?php if ($_GET['msg'] === 'deleted'): ?>
@@ -63,6 +77,9 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tr>
         </thead>
         <tbody>
+            <?php if (empty($reviews)): ?>
+            <tr><td colspan="8" style="text-align:center;color:#888;font-style:italic;">Không tìm thấy đánh giá phù hợp.</td></tr>
+            <?php else: ?>
             <?php foreach ($reviews as $r): ?>
             <tr>
                 <td><?= $r['id'] ?></td>
@@ -83,6 +100,7 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </td>
             </tr>
             <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
     </table>
     

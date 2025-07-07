@@ -61,7 +61,7 @@ function updateCartCount(count) {
 function refreshCartCount() {
     if (!window.isLoggedIn) return;
     
-    fetch('cart.php?action=get_count')
+    fetch('get_cart_count.php')
         .then(res => res.json())
         .then(data => {
             if (data.success) {

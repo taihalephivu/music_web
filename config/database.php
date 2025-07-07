@@ -1,5 +1,4 @@
 <?php
-// Cấu hình kết nối database
 class Database {
     private $host = "localhost";
     private $db_name = "music_web";
@@ -10,7 +9,6 @@ class Database {
     // Lấy kết nối database
     public function getConnection() {
         $this->conn = null;
-
         try {
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
             $this->conn->exec("set names utf8");

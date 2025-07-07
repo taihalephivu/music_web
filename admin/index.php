@@ -4,7 +4,7 @@ if (!isset($_SESSION['admin'])) {
     header('Location: login.php');
     exit;
 }
-// XỬ LÝ POST CHO SẢN PHẨM (nếu đang ở trang products)
+// XỬ LÝ POST CHO SẢN PHẨM 
 if (isset($_GET['page']) && $_GET['page'] === 'products') {
     require_once '../config/database.php';
     $db = new Database();
@@ -54,7 +54,7 @@ if (isset($_GET['page']) && $_GET['page'] === 'products') {
         exit;
     }
 }
-// XỬ LÝ POST CHO ĐÁNH GIÁ (nếu đang ở trang reviews)
+// XỬ LÝ POST CHO ĐÁNH GIÁ 
 if (isset($_GET['page']) && $_GET['page'] === 'reviews') {
     require_once '../config/database.php';
     $db = new Database();

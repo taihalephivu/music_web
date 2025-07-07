@@ -10,9 +10,18 @@ require_once '../config/database.php';
 // Kết nối DB
 $db = new Database();
 $conn = $db->getConnection();
-$sql = "SELECT o.id, u.username, o.phone, o.shipping_address, o.created_at, o.total_amount, o.status FROM orders o JOIN users u ON o.user_id = u.id ORDER BY o.id DESC";
+
+// Xử lý tìm kiếm
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$where = '';
+$params = [];
+if ($search !== '') {
+    $where = "WHERE u.username LIKE :kw OR o.phone LIKE :kw OR o.shipping_address LIKE :kw";
+    $params[':kw'] = "%$search%";
+}
+$sql = "SELECT o.id, u.username, o.phone, o.shipping_address, o.created_at, o.total_amount, o.status FROM orders o JOIN users u ON o.user_id = u.id $where ORDER BY o.id DESC";
 $stmt = $conn->prepare($sql);
-$stmt->execute();
+$stmt->execute($params);
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 function statusLabel($status) {
     switch($status) {
@@ -65,6 +74,11 @@ if (isset($_POST['delete_order_id'])) {
 }
 ?>
 <h2>Quản lý đơn hàng</h2>
+<form method="get" action="index.php" style="margin-bottom:18px;display:flex;gap:8px;max-width:400px;">
+    <input type="hidden" name="page" value="orders">
+    <input type="text" name="search" placeholder="Tìm username, SĐT, địa chỉ..." value="<?php echo htmlspecialchars($search); ?>" style="flex:1;padding:8px 10px;border-radius:6px;border:1px solid #ccc;">
+    <button type="submit" style="padding:8px 18px;border-radius:6px;background:#2196f3;color:#fff;border:none;">Tìm kiếm</button>
+</form>
 <table>
     <tr>
         <th>ID</th>
@@ -76,6 +90,9 @@ if (isset($_POST['delete_order_id'])) {
         <th>Trạng thái</th>
         <th>Hành động</th>
     </tr>
+    <?php if (empty($orders)): ?>
+    <tr><td colspan="8" style="text-align:center;color:#888;font-style:italic;">Không tìm thấy đơn hàng phù hợp.</td></tr>
+    <?php else: ?>
     <?php foreach($orders as $order): ?>
     <tr>
         <td><?php echo $order['id']; ?></td>
@@ -113,6 +130,7 @@ if (isset($_POST['delete_order_id'])) {
         </td>
     </tr>
     <?php endforeach; ?>
+    <?php endif; ?>
 </table>
 <br>
 <a href="index.php">Quay lại trang admin</a> 
